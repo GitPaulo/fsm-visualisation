@@ -1,6 +1,6 @@
 let generateButton = document.getElementById("generate");
-let playButton     = document.getElementById("play");
-let pauseButton    = document.getElementById("pause");
+let acceptButton   = document.getElementById("accept");
+let acceptInput    = document.getElementById("accept-input");
 
 generateButton.onclick = function (params) {
     fsm = new DFA(
@@ -15,7 +15,7 @@ generateButton.onclick = function (params) {
                 accepting : false,
             },
             '2' : {
-                transition : {
+                transition : { 
                     'a' : '3',
                 },
                 accepting : false,
@@ -37,10 +37,11 @@ generateButton.onclick = function (params) {
     )
 }
 
-playButton.onclick = function (params) {
-    
-}
+acceptButton.onclick = function (params) {
+    if ( fsm === null ) {
+        alert("Must generate FSM first!");
+        return;
+    }   
 
-pauseButton.onclick = function (params) {
-    
+    fsm.accept(acceptInput.value).then((r) => (console.log(r) || true) && alert(`Accepted: ${r.accepted}\nMessage: ${r.message}`));
 }

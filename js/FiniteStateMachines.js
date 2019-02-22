@@ -133,7 +133,7 @@ class FiniteStateMachine {
             // State Elements first >>>> CHANGE RANDOM POSITIONING HERE <<<
             for (let stateSymbol in this.states) {
                 let state      = this.getState(stateSymbol);
-                let offset     = 300; // change this lol
+                let offset     = 150; // change this lol
                 let isStarting = this.isStartingState(state);
                 let stateGUI   = new StateElementGUI(state.symbol, state.accepting, isStarting, {
                     x: env.random(offset, env.width - offset),

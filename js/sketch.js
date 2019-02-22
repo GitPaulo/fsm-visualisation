@@ -22,7 +22,7 @@ var environment = function (env) {
         env.textAlign(env.CENTER, env.CENTER);
         
         // Create canvas
-        env.createCanvas(w / 1.009, h / 1.1); // okay p5!
+        env.createCanvas(w / 1.009, h / 1.082); // okay p5!
     }
 
     env.noFSMSelectedDraw = function () {
