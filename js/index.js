@@ -9,7 +9,7 @@ generateButton.onclick = function (params) {
             '1' : {
                 transition : {
                     'a' : '2',
-                    'b' : '4'
+                    'b' : '2'
 
                 },
                 accepting : false,
@@ -22,13 +22,13 @@ generateButton.onclick = function (params) {
             },
             '3' : {
                 transition : {
-                    'c' : '4'
+                    'c' : '4',
                 },
                 accepting : false,
             },
             '4' : {
                 transition : {
-                    'a' : '2'
+                    'a' : '2',
                 },
                 accepting : true,
             },
@@ -37,11 +37,12 @@ generateButton.onclick = function (params) {
     )
 }
 
+var acceptPromise;
 acceptButton.onclick = function (params) {
     if ( fsm === null ) {
         alert("Must generate FSM first!");
         return;
     }   
 
-    fsm.accept(acceptInput.value).then((r) => (console.log(r) || true) && alert(`Accepted: ${r.accepted}\nMessage: ${r.message}`));
+    acceptPromise = fsm.accept(acceptInput.value).then((r) => (console.log(r) || true) && alert(`Accepted: ${r.accepted}\nMessage: ${r.message}`));
 }

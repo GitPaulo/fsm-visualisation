@@ -90,26 +90,8 @@ class FiniteStateMachine {
         return this.GUIElement.states[symbol];
     }
 
-    getTransistionGUIElement(stateSymbolFrom, stateSymbolTo, transitionSymbol) {
-        let transitions         = this.GUIElement.transitions;
-        let possibleTransitions = [];
-        let actualTransitions   = [];
-
-        for (let transition of transitions) {
-            if (transition.symbol === transitionSymbol) {
-                possibleTransitions.push(transition);
-            }
-        }
-
-        console.log(possibleTransitions, "PT");
-        
-        for (let possibleTransition of possibleTransitions) {
-            if (possibleTransition.stateFrom.symbol === stateSymbolFrom && possibleTransition.stateTo.symbol === stateSymbolTo) {
-                actualTransitions.push(possibleTransition);
-            }
-        }
-        
-        return actualTransitions;
+    getTransistionGUIElement(stateSymbolFrom, stateSymbolTo) {
+        return this.GUIElement.transitions[stateSymbolFrom + "," + stateSymbolTo];
     }
 
     accept() {
@@ -120,7 +102,7 @@ class FiniteStateMachine {
         if (!this.hasGUIElementInitialised()) {
             this.GUIElement = {
                 states:      {},
-                transitions: [],
+                transitions: {},
             }
 
             Object.defineProperty(this.GUIElement, 'env', {
@@ -145,14 +127,22 @@ class FiniteStateMachine {
             }
 
             // Now Transition Elements - (dependant)
+             // Format this.GUIElement.transitions = { "1,2" : { "a" : [el1, el2], "b" : [el3], (...) } }
             for (let stateSymbol in this.states) {
                 let state = this.getState(stateSymbol);
                 for (let transitionSymbol in state.transition) {
                     let transitionStateSymbolArray = state.transition[transitionSymbol].constructor === Array 
                                                         ? state.transition[transitionSymbol] : [state.transition[transitionSymbol]];
                     for (let transitionStateSymbol of transitionStateSymbolArray) {
-                        let transitionGUI = new TransistionElementGUI(transitionSymbol, this.GUIElement.states[stateSymbol], this.GUIElement.states[transitionStateSymbol], env);
-                        this.GUIElement.transitions.push(transitionGUI);
+                        let edgeSymbol = `${stateSymbol},${transitionStateSymbol}`;
+                        let edgeObject = this.GUIElement.transitions[edgeSymbol];
+
+                        if ( typeof edgeObject === "undefined") {
+                            this.GUIElement.transitions[edgeSymbol] = new TransistionElementGUI(transitionSymbol, this.GUIElement.states[stateSymbol], this.GUIElement.states[transitionStateSymbol], env);
+                        } else {
+                            let newTransistionSymbol = edgeObject.symbol + "," + transitionSymbol;
+                            this.GUIElement.transitions[edgeSymbol].symbol = newTransistionSymbol;
+                        }
                     }
                 }
             }
@@ -165,9 +155,11 @@ class FiniteStateMachine {
         let stateElements      = this.GUIElement.states;
         let transitionElements = this.GUIElement.transitions;
 
+        // console.log(transitionElements);
         // draw transitions (so that they go in the back of state elements)
-        for (let transition of transitionElements) {
-            transition.draw(env);
+        for (let edgeSymbol in transitionElements) {
+            let edgeObject = transitionElements[edgeSymbol];
+            edgeObject.draw(env);
         }
         
         // draw states
@@ -182,6 +174,7 @@ class FiniteStateMachine {
  * DFA extending parent class  
  * Currently I do not represent dead states. Leave it like that? Matters on NFA --> DFA conversion too!
  */
+const SLEEP_TIME = 700;
 class DFA extends FiniteStateMachine {
     constructor(alphabet, states, starting) {
         super(alphabet, states, starting);
@@ -194,13 +187,12 @@ class DFA extends FiniteStateMachine {
         if (this.hasGUIElementInitialised()) {
             let stateElement = this.getStateGUIElementBySymbol(state.symbol);
             stateElement.highlight([255, 100, 100]);
-            await sleep(1000);
+            await sleep(SLEEP_TIME);
             stateElement.highlight([200, 200, 200]);
         }
-
+        
         for (let i = 0; i < string.length; i++) {
             let symbol = string.charAt(i);
-
             // Check if symbol is in alphabet
             if (!this.isValidSymbol(symbol))
                 return new AcceptanceResult(string, false, "An invalid symbol was found in the input! (not belong in alpahabet)");
@@ -213,19 +205,19 @@ class DFA extends FiniteStateMachine {
             // highlight (transition) next state
             if (this.hasGUIElementInitialised()) {
                 let transitionStateElement = this.getStateGUIElementBySymbol(transitionState.symbol);
-                let transitionGUIElement   = this.getTransistionGUIElement(state.symbol, transitionState.symbol, symbol)[0] // ITS A DFA SO ONLY 1 EVER - NOT THE CASE FOR NFA!!!!Q
-                
-                console.log(transitionGUIElement, "<<<<<<<<");
+                let transitionGUIElement   = this.getTransistionGUIElement(state.symbol, transitionState.symbol) // ITS A DFA SO ONLY 1 EVER - NOT THE CASE FOR NFA!!!!Q
 
                 let prevColorS = transitionStateElement.color;
                 let prevColorT = transitionGUIElement.color;
                 
+                // Highlight Transition
                 transitionGUIElement.highlight([255, 100, 100]);
-                await sleep(1000);
+                await sleep(SLEEP_TIME);
                 transitionGUIElement.highlight(prevColorT);
 
+                // Highlight Next Node
                 transitionStateElement.highlight([255, 100, 100]);
-                await sleep(1000);
+                await sleep(SLEEP_TIME);
                 transitionStateElement.highlight(prevColorS);  
             }
 
@@ -268,7 +260,7 @@ class NFA extends FiniteStateMachine {
                 return new AcceptanceResult(false, "An invalid symbol was found in the input! (not belong in alpahabet)");
 
             S[i - 1] = S[i - 1] || [];
-            C[i]     = C[i] || [];
+            C[i]     = C[i]     || [];
 
             for (let stateSymbol of S[i - 1]) {
                 let currentState              = this.getState(stateSymbol);
@@ -281,7 +273,7 @@ class NFA extends FiniteStateMachine {
             }
         }
 
-        console.log("State Table: ", S, "Result Table: ", C);
+        // console.log("State Table: ", S, "Result Table: ", C);
 
         for (let stateSymbol of C[n]) {
             let state = this.getState(stateSymbol);

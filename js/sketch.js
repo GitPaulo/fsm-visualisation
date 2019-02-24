@@ -58,8 +58,9 @@ var environment = function (env) {
         }
 
         // transitions
-        for (let transition of transitionElements) {
-            transition[id](mx, my);
+        for (let edgeSymbol in transitionElements) {
+            let edgeObject = transitionElements[edgeSymbol];
+            edgeObject[id](mx, my);
         }
     }
 

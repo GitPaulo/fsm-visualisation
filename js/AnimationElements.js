@@ -100,7 +100,7 @@ class StateElementGUI {
 
     highlight(color) {
         this.color = color;
-        console.log("Highlight color changed to: ", color);
+        //console.log("Highlight color changed to: ", color);
     }
 }
 
@@ -201,6 +201,6 @@ class TransistionElementGUI {
 
     highlight(color) {
         this.color = color;
-        console.log("Highlight color changed to: ", color);
+        //console.log("Highlight color changed to: ", color);
     }
 }
