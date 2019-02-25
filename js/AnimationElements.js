@@ -7,7 +7,8 @@ class StateElementGUI {
     constructor(symbol, isAccepting, isStarting, {
         x,
         y,
-        radius
+        radius,
+        index
     }, env) {
         this.symbol      = symbol;
         this.isAccepting = isAccepting;
@@ -15,6 +16,7 @@ class StateElementGUI {
         this.x           = x;
         this.y           = y;
         this.radius      = radius;
+        this.index       = index
         this.isDragging  = false;
         this.env         = env;
         this.color       = [240, 240, 240];
@@ -69,11 +71,7 @@ class StateElementGUI {
             env.fill(225, 95, 45);
 
             // Draw arrow head
-            env.push() //start new drawing state
-                env.translate(sx, sy); //translates to the destination vertex
-                env.rotate(env.HALF_PI); //rotates the arrow point
-                env.triangle(-offset * 0.5, offset, offset * 0.5, offset, 0, -offset / 2); //draws the arrow point as a triangle
-            env.pop();
+            drawArrow(sx, sy, env.HALF_PI, offset, env);
         }
 
         if (this.isAccepting) {
@@ -105,29 +103,38 @@ class StateElementGUI {
 }
 
 class TransistionElementGUI {
-    constructor(symbol, stateFrom, stateTo, env) {
-        this.symbol     = symbol;
-        this.stateFrom  = stateFrom;
-        this.stateTo    = stateTo;
-        this.env        = env;
-        this.color      = [80, 80, 80];
-        this.textColor  = [255, 255, 255];
-        this.offset     = { x:0, y:0 };
-        this.thickness  = 15;
-        this.isDragging = false;
+    constructor(symbol, stateFrom, stateTo, direction, needsOffset, env) {
+        this.symbol      = symbol;
+        this.stateFrom   = stateFrom;
+        this.stateTo     = stateTo;
+        this.direction   = direction;
+        this.needsOffset = needsOffset;
+        this.env         = env;
+        this.color       = [80, 80, 80];
+        this.textColor   = [255, 255, 255];
+        this.thickness   = 15;
+        this.isDragging  = false;
+        this.offset      = { 
+            x: 0, 
+            y: 0
+        };
     }
 
     isMouseOver() {
-        // im lazy
-        let env = this.env;
+        // Over complicate the way to calculate if you are hovering a transistion line
+        // HIGH SCHOOL MATHS TO THE EXTREME BOYS - IT WORKS BTW
+        let env  = this.env;
         let sf_x = this.stateFrom.x + this.offset.x;
         let sf_y = this.stateFrom.y + this.offset.y;
         let st_x = this.stateTo.x   + this.offset.x;
         let st_y = this.stateTo.y   + this.offset.y;
 
-        let d = d2d3(sf_x, sf_y, st_x, st_y, env.mouseX, env.mouseY);
+        let d      = d2d3(sf_x, sf_y, st_x, st_y, env.mouseX, env.mouseY);
+        let e1dist = env.dist(sf_x, sf_y, env.mouseX, env.mouseY);
+        let e2dist = env.dist(st_x, st_y, env.mouseX, env.mouseY);
+        let rdist  = env.dist(sf_x, sf_y, st_x, st_y);
 
-        return d < this.thickness/2;
+        return (e1dist <= rdist) && (e2dist <= rdist) && (d < this.thickness/2);
     }
 
     /* Called when mouse is released */
@@ -152,6 +159,18 @@ class TransistionElementGUI {
     draw() {
         // im lazy
         let env = this.env;
+
+        // Calculate offset :)
+        let coord_offset = 15;
+        this.offset = { 
+            x: this.needsOffset ? coord_offset : 0, 
+            y: this.needsOffset ? coord_offset : 0,
+        };
+
+        if (this.needsOffset && this.direction == TransistionElementGUI.BACKWARD) {
+            this.offset.x *= -1;
+            this.offset.y *= -1
+        }
 
         // points
         let sf_x = this.stateFrom.x + this.offset.x;
@@ -182,21 +201,19 @@ class TransistionElementGUI {
         env.fill(5, 5, 5);
 
         // Draw arrow head
-        env.push() //start new drawing state
-            var angle = env.atan2(sf_y - st_y, sf_x - st_x); //gets the angle of the line
-            env.translate(midpoint.x, midpoint.y); //translates to the destination vertex
-            env.rotate(angle - env.HALF_PI); //rotates the arrow point
-            env.triangle(-offset * 0.5, offset, offset * 0.5, offset, 0, -offset / 2); //draws the arrow point as a triangle
-        env.pop();
+        drawArrow(midpoint.x, midpoint.y, env.atan2(sf_y - st_y, sf_x - st_x) - env.HALF_PI, offset, env);
 
         // Text
         let tw = env.textWidth(this.symbol);
-        let th = env.textSize(this.symbol);
+        let th = env.textSize(this.symbol) + 10;
+
+        if(this.needsOffset && this.direction === TransistionElementGUI.BACKWARD)
+            th *= -.5;
 
         env.textFont(env.NORMAL_FONT);
         env.fill(...this.textColor);
         env.textSize(80);
-        env.text(this.symbol, midpoint.x - tw / 2, midpoint.y + th + 10);
+        env.text(this.symbol, midpoint.x - tw / 2, midpoint.y + th );
     }
 
     highlight(color) {
@@ -204,3 +221,6 @@ class TransistionElementGUI {
         //console.log("Highlight color changed to: ", color);
     }
 }
+
+TransistionElementGUI.FORWARD  = 1;
+TransistionElementGUI.BACKWARD = 2;

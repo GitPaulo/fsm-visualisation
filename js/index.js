@@ -17,6 +17,7 @@ generateButton.onclick = function (params) {
             '2' : {
                 transition : { 
                     'a' : '3',
+                    // 'b' : '1' FIX THIS BEHAVIOR BY IMPLEMENTING ORDER AND 2 TYPES OF EDGES (backwards, forwards)
                 },
                 accepting : false,
             },

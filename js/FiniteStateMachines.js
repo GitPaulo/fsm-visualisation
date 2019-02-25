@@ -113,6 +113,7 @@ class FiniteStateMachine {
             });
 
             // State Elements first >>>> CHANGE RANDOM POSITIONING HERE <<<
+            let i = 0;
             for (let stateSymbol in this.states) {
                 let state      = this.getState(stateSymbol);
                 let offset     = 150; // change this lol
@@ -120,10 +121,12 @@ class FiniteStateMachine {
                 let stateGUI   = new StateElementGUI(state.symbol, state.accepting, isStarting, {
                     x: env.random(offset, env.width - offset),
                     y: env.random(offset, env.height - offset),
-                    radius: 100
+                    radius: 100,
+                    index : i
                 }, env);
 
                 this.GUIElement.states[stateSymbol] = stateGUI;
+                i++;
             }
 
             // Now Transition Elements - (dependant)
@@ -138,7 +141,18 @@ class FiniteStateMachine {
                         let edgeObject = this.GUIElement.transitions[edgeSymbol];
 
                         if ( typeof edgeObject === "undefined") {
-                            this.GUIElement.transitions[edgeSymbol] = new TransistionElementGUI(transitionSymbol, this.GUIElement.states[stateSymbol], this.GUIElement.states[transitionStateSymbol], env);
+                            let fromState   = this.GUIElement.states[stateSymbol];
+                            let toState     = this.GUIElement.states[transitionStateSymbol];
+                            let direction   = fromState.index > toState.index ? TransistionElementGUI.FORWARD : TransistionElementGUI.BACKWARD;
+
+                            // Call me Mr. Hacky Boy - pls never show this to anyone - k thx bye
+                            let offsetSymbol = swapSubstrings(edgeSymbol, stateSymbol, transitionStateSymbol);
+                            let needsOffset  = typeof this.GUIElement.transitions[offsetSymbol] === "undefined" ? false : true;
+
+                            if (needsOffset)
+                                this.GUIElement.transitions[offsetSymbol].needsOffset = true;
+
+                            this.GUIElement.transitions[edgeSymbol] = new TransistionElementGUI(transitionSymbol, fromState, toState, direction, needsOffset, env);
                         } else {
                             let newTransistionSymbol = edgeObject.symbol + "," + transitionSymbol;
                             this.GUIElement.transitions[edgeSymbol].symbol = newTransistionSymbol;
