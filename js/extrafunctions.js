@@ -22,9 +22,9 @@ window.drawArrow = function (sx, sy, ang, offset, env) {
     env.pop();
 }
 
-window.curveBetween = function (env, x1, y1, x2, y2, d, h, flip, env) {
+window.curveBetween = function (x1, y1, x2, y2, d, h, flip, env) {
     //find two control points off this line
-    var original = p5.Vector.sub(env.createVector(x2, y2), env.createVector(x1, y1));
+    var original = p5.Vector.sub(p5.createVector(x2, y2), env.createVector(x1, y1));
     var inline   = original.copy().normalize().mult(original.mag() * d);
     var rotated  = inline.copy().rotate(env.radians(90) + flip * env.radians(180)).normalize().mult(original.mag() * h);
     var p1       = p5.Vector.add(p5.Vector.add(inline, rotated), env.createVector(x1, y1));

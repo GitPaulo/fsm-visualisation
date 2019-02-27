@@ -1,0 +1,106 @@
+/******************
+* Load Assets
+******************/
+@font-face {
+    font-family: 'ButtonFont';
+    src: url('../assets/fonts/Montserrat-Bold.otf');
+}
+
+@font-face {
+    font-family: 'InputFont';
+    src: url('../assets/fonts/Montserrat-Light.otf');
+}
+
+/******************
+* Main Page CSS
+******************/
+
+.main {
+    height: 100%;
+    overflow: auto;
+}
+
+#sketch-holder {
+    border-color: white;
+    border-width: 4px;
+    height: 90%;
+}
+
+.controls {
+    height: 10%;
+}
+
+.pure-button.button-accept {
+    color: white;
+    font-family: "ButtonFont";
+    font-size: 2vh;
+    height: 65%;
+    background: rgb(108, 224, 65);
+    border-style: solid;
+    border-color: white;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.pure-button.button-generate {
+    color: white;
+    font-family: "ButtonFont";
+    font-size: 2.5vh;
+    background: rgb(30, 30, 30);
+    border-style: solid;
+    border-color: white;
+}
+
+#accept-input {
+    width: 100%;
+    height: 35%;
+    background: rgb(30, 30, 30);
+    color: white;
+    font-family: "InputFont";
+    font-size: 1.8vh;
+    text-align: center;
+    border-style: solid;
+    border-color: white;
+}
+
+/******************
+* Generator CSS
+******************/
+
+/* The popup (background) */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* popup Content/Box */
+.popup-content {
+    background-color: #fefefe;
+    margin: 6% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

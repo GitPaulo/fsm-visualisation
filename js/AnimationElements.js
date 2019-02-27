@@ -114,6 +114,7 @@ class TransistionElementGUI {
         this.textColor   = [255, 255, 255];
         this.thickness   = 15;
         this.isDragging  = false;
+        this.isLoop      = stateTo === stateFrom;
         this.offset      = { 
             x: 0, 
             y: 0
@@ -184,35 +185,42 @@ class TransistionElementGUI {
             y: (sf_y + st_y) / 2,
         }
 
-        // line color
-        //console.log(this.isMouseOver());
+        // line properties
+        env.strokeWeight(this.thickness);
+
         if(this.isMouseOver())
             env.stroke(140, 90, 90);
         else
             env.stroke(...this.color);
 
-        // line  
-        env.strokeWeight(this.thickness);
-        env.line(sf_x, sf_y, st_x, st_y);
-        env.strokeWeight(1);
+        // line or loop :)
+        if (this.isLoop) {
+            env.noFill();
+            env.arc(sf_x, sf_y, 85, 260, 0, env.PI); // sf_x == st_x same for y so doesnt matter which
+            env.fill(255);
+            env.strokeWeight(1);
+        } else { // line boys!
+            env.line(sf_x, sf_y, st_x, st_y);
+            env.strokeWeight(1);
 
-        // arrow point
-        var offset = 14;
-        env.fill(5, 5, 5);
+            // arrow point
+            var offset = 14;
+            env.fill(5, 5, 5);
 
-        // Draw arrow head
-        drawArrow(midpoint.x, midpoint.y, env.atan2(sf_y - st_y, sf_x - st_x) - env.HALF_PI, offset, env);
+            // Draw arrow head
+            drawArrow(midpoint.x, midpoint.y, env.atan2(sf_y - st_y, sf_x - st_x) - env.HALF_PI, offset, env);
+        }
 
         // Text
         let tw = env.textWidth(this.symbol);
         let th = env.textSize(this.symbol) + 10;
 
         if(this.needsOffset && this.direction === TransistionElementGUI.BACKWARD)
-            th *= -.5;
+            th *= -.4;
 
         env.textFont(env.NORMAL_FONT);
         env.fill(...this.textColor);
-        env.textSize(80);
+        env.textSize(60);
         env.text(this.symbol, midpoint.x - tw / 2, midpoint.y + th );
     }
 

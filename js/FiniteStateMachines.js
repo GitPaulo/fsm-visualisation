@@ -157,7 +157,7 @@ class FiniteStateMachine {
                             let newTransistionSymbol = edgeObject.symbol + "," + transitionSymbol;
                             this.GUIElement.transitions[edgeSymbol].symbol = newTransistionSymbol;
                         }
-                    }
+                    } 
                 }
             }
         }
@@ -251,7 +251,12 @@ class NFA extends FiniteStateMachine {
     }
 
     // problem if starting state is accept state - debug!
-    accept(string) {
+    /**
+     * Not working properly
+     * Test case: ababc
+     * new NFA(["a","b","c"],{1:{transition:{a:["2","3"],b:"2"},accepting:!1},2:{transition:{a:"3",b:["1","3"],c:["4","3"]},accepting:!1},3:{transition:{c:"4"},accepting:!1},4:{transition:{a:"2"},accepting:!0}},"1");
+     */
+    async accept(string) {
         let S = this.getStatesSymbolArray();
         let C = [];
 
@@ -271,7 +276,7 @@ class NFA extends FiniteStateMachine {
             let inputSymbol = string.charAt(i - 1);
 
             if (!this.isValidSymbol(inputSymbol))
-                return new AcceptanceResult(false, "An invalid symbol was found in the input! (not belong in alpahabet)");
+                return new AcceptanceResult(string, false, "An invalid symbol was found in the input! (not belong in alpahabet)");
 
             S[i - 1] = S[i - 1] || [];
             C[i]     = C[i]     || [];
@@ -287,15 +292,15 @@ class NFA extends FiniteStateMachine {
             }
         }
 
-        // console.log("State Table: ", S, "Result Table: ", C);
+        console.log(C, S);
 
         for (let stateSymbol of C[n]) {
             let state = this.getState(stateSymbol);
             if (state.accepting)
-                return new AcceptanceResult(true, "NFA has accepted the input! (There exists one possible accepting result)");
+                return new AcceptanceResult(string, true, "NFA has accepted the input! (There exists one possible accepting result)");
         }
 
-        return new AcceptanceResult(false, "NFA has rejected input!")
+        return new AcceptanceResult(string, false, "NFA has rejected input!")
     }
 
     convertToDFA() {
@@ -315,3 +320,7 @@ class E_NFA extends FiniteStateMachine { // extend NFA?
 
     }
 }
+
+window.DFA   = DFA;
+window.NFA   = NFA;
+window.E_NFA = E_NFA;
