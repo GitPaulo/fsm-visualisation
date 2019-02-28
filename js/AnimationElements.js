@@ -195,8 +195,11 @@ class TransistionElementGUI {
 
         // line or loop :)
         if (this.isLoop) {
+            let loop_width  = 90;
+            let loop_height = 270;
+
             env.noFill();
-            env.arc(sf_x, sf_y, 85, 260, 0, env.PI); // sf_x == st_x same for y so doesnt matter which
+            env.arc(sf_x, sf_y, loop_width, loop_height, 0, env.PI); // sf_x == st_x same for y so doesnt matter which
             env.fill(255);
             env.strokeWeight(1);
         } else { // line boys!
@@ -212,17 +215,18 @@ class TransistionElementGUI {
         }
 
         // Text
-        let extra = this.isLoop ? 40 : 10;
+        env.fill(...this.textColor);
+        env.textFont(env.NORMAL_FONT);
+        env.textSize(60);
+
+        let extra = this.isLoop ? 45 : 10;
         let tw    = env.textWidth(this.symbol);
         let th    = env.textSize(this.symbol) + extra;
 
-        if(this.needsOffset && this.direction === TransistionElementGUI.BACKWARD)
+        if(!this.isLoop && this.needsOffset && this.direction === TransistionElementGUI.BACKWARD)
             th *= -.4;
 
-        env.textFont(env.NORMAL_FONT);
-        env.fill(...this.textColor);
-        env.textSize(60);
-        env.text(this.symbol, midpoint.x - tw / 2, midpoint.y + th );
+        env.text(this.symbol, midpoint.x - tw / 2, midpoint.y + th);
     }
 
     highlight(color) {

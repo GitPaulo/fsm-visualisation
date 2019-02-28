@@ -1,5 +1,5 @@
 // Initialise canvas to div.
-let canvasElement = document.getElementById("sketch-holder");
+let canvasElement = document.getElementById("canvas");
 
 // Mouse press fun stuff
 let paths = [];

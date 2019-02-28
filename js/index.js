@@ -1,45 +1,48 @@
-// Global Variable for the visualised FSM entity!
-var fsm = null;
+// Global Variable for the visualised FSM entity & Accept function promise.
+var fsm           = null;
+var acceptPromise = null;
 
-// page core elements
+// Page core elements
 let generateButton = document.getElementById("generate");
 let acceptButton   = document.getElementById("accept");
 let acceptInput    = document.getElementById("accept-input");
-let popup          = document.getElementById('generate-popup');
-let span           = document.getElementsByClassName("close")[0];
+let popup          = document.getElementById('generator');
+let closeButton    = document.getElementsByClassName("popup-close-button")[0];
 
-// generator field elements
-let fsmSelect           = document.getElementById("fsm-select");
-let alphabetInput       = document.getElementById("alphabet-input");
-let statesInput         = document.getElementById("states-input");
-let startingStateInput  = document.getElementById("starting-state-input");
-let acceptingStateInput = document.getElementById("accepting-state-input");
-let generateFSMButton   = document.getElementById("generate-fsm");
-let transitionElement   = document.getElementById("transition-element");
+// Generator field elements
+let fsmSelect           = document.getElementById("generator-fsm-select");
+let alphabetInput       = document.getElementById("generator-alphabet-input");
+let statesInput         = document.getElementById("generator-states-input");
+let startingStateInput  = document.getElementById("generator-startingstate-input");
+let acceptingStateInput = document.getElementById("generator-acceptingstate-input");
+let generateFSMButton   = document.getElementById("generator-generate-fsm");
+let transitionElement   = document.getElementById("generator-transition-element");
 
-/***************
- * Page Logic
-***************/
+/******************************
+ *      Page Logic
+******************************/
 
 generateButton.onclick = function (params) {
     popup.style.display    = "block";
     acceptButton.className = "hvr-underline-from-center pure-button button-accept";
     acceptInput.className  = "accept-input";
+
     updateTransistionTable();
 }
 
-var acceptPromise;
+
 acceptButton.onclick = function (params) {
     if (fsm === null) {
-        alert("Must generate FSM first!");
+        alert("Must generate a FSM first!");
         return;
     }
+
     acceptPromise = fsm.accept(acceptInput.value).then((r) => (console.log(r) || true) && alert(`Accepted: ${r.accepted}\nMessage: ${r.message}`));
 }
 
-/*******************
- * Generator Logic
-********************/
+/******************************
+ *      Generator Logic
+******************************/
 
 // Biggest mess ever created BUT HEY IT WORKS FAM
 let transition = {}; // { '1' = { 'a' : [el1, el2], ... } }
@@ -51,7 +54,7 @@ let updateTransistionTable = function () {
     let alphabetString = alphabetInput.value.trim();
 
     if (alphabetString.indexOf(' ') >= 0)
-        throw "Please do not have spaces in alphabet string input!";
+        return alert("Please do not have spaces in alphabet string input!");
     
     alphabet = alphabetString.split(',');
 
@@ -59,7 +62,7 @@ let updateTransistionTable = function () {
     let statesString = statesInput.value.trim();
 
     if (statesString.indexOf(' ') >= 0)
-        throw "Please do not have spaces in states string input!";
+        return alert("Please do not have spaces in states string input!");
     
     states = statesString.split(',');
 
@@ -103,48 +106,46 @@ let updateTransistionTable = function () {
     console.log(transition);
 }
 
-span.onclick = function () {
+closeButton.onclick = function () {
     popup.style.display = "none";
     if (fsm) return; // so that we can continue to test input on current DFA
     acceptButton.className = "hvr-underline-from-center pure-button button-accept pure-button-disabled";
     acceptInput.className  = "accept-input input-disable";
 }
 
-alphabetInput.onblur = function () {
-    updateTransistionTable();
-}
-
-statesInput.onblur = function () {
-    updateTransistionTable();
-}
-
 generateFSMButton.onclick = function () {
-    let fsmType        = fsmSelect.value;
-    let fsmConstructor = window[fsmType]; // LMAO - YOU DID NOT SEE THIS - MOVE A LONG - NOTHING HERE
-    let alphabet       = [];
-    let states         = {};
-    let startingState  = null;
+    let fsmType             = fsmSelect.value;
+    let fsmConstructor      = window[fsmType]; // LMAO - YOU DID NOT SEE THIS - MOVE A LONG - NOTHING HERE
+    let alphabet            = [];
+    let states              = {};
+    let startingStateSymbol = "";
 
-    console.log(">>>>", fsmConstructor, fsmType)
+    console.log(">>>>", fsmConstructor, fsmType);
 
     if (typeof fsmConstructor === "undefined")
-        throw "Invalid FSM Selected!";
+        return alert("Invalid FSM Selected!");
 
     // parse alphabet
     let alphabetString = alphabetInput.value.trim();
 
     if (alphabetString.indexOf(' ') >= 0)
-        throw "Please do not have spaces in alphabet string input!";
+        return alert("Please do not have spaces in alphabet string input!");
     
     alphabet = alphabetString.split(',');
+
+    if (alphabet.length[0] === "")
+        return alert("The FSM must have a non empty alphabet set.");
 
     // parse states
     let statesString = statesInput.value.trim();
 
     if (statesString.indexOf(' ') >= 0)
-        throw "Please do not have spaces in states string input!";
+        return alert("Please do not have spaces in states string input!");
     
     let statesArray = statesString.split(',');
+
+    if (statesArray[0] === "")
+        return alert("The FSM must have a non empty states set.");
 
     for (let stateSymbol of statesArray) {
         states[stateSymbol] = {
@@ -154,10 +155,25 @@ generateFSMButton.onclick = function () {
     }
 
     // starting state
-    startingState = startingStateInput.value.trim();
+    startingStateSymbol = startingStateInput.value.trim();
+    
+    if (startingStateSymbol === "")
+        return alert("There must be one starting state!");
 
-    // accepting state
-    states[acceptingStateInput.value.trim()].accepting = true;
+    // accepting states
+    let acceptingStateString = acceptingStateInput.value.trim();
+
+    if (acceptingStateString.indexOf(' ') >= 0)
+        return alert("Please do not have spaces in states string input!");
+     
+    let acceptingStatesArray = acceptingStateString.split(',');
+
+    if (acceptingStatesArray[0] === "")
+        return alert("The FSM must have at least one accepting state!");
+
+    for (let acceptingStateSymbol of acceptingStatesArray) {
+        states[acceptingStateSymbol].accepting = true;
+    }
 
     // transition
     let transitionData = transition;
@@ -178,9 +194,12 @@ generateFSMButton.onclick = function () {
     // Finally initialise fsm object    
     fsm = new fsmConstructor(
         alphabet,
-        states,
-        startingState
+        states, 
+        startingStateSymbol
     );
 
     popup.style.display = "none";
 }
+
+alphabetInput.onblur = updateTransistionTable;
+statesInput.onblur   = updateTransistionTable;

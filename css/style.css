@@ -20,7 +20,7 @@
     overflow: auto;
 }
 
-#sketch-holder {
+.canvas {
     border-color: white;
     border-width: 4px;
     height: 90%;
@@ -92,22 +92,22 @@
 /* popup Content/Box */
 .popup-content {
     background-color: #fefefe;
-    margin: 6% auto;
+    margin: auto;
     padding: 20px;
     border: 1px solid #888;
     width: 30%;
 }
 
 /* The Close Button */
-.close {
+.popup-close-button {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+.popup-close-button:hover,
+.popup-close-button:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
