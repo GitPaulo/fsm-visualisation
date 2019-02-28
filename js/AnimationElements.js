@@ -212,8 +212,9 @@ class TransistionElementGUI {
         }
 
         // Text
-        let tw = env.textWidth(this.symbol);
-        let th = env.textSize(this.symbol) + 10;
+        let extra = this.isLoop ? 40 : 10;
+        let tw    = env.textWidth(this.symbol);
+        let th    = env.textSize(this.symbol) + extra;
 
         if(this.needsOffset && this.direction === TransistionElementGUI.BACKWARD)
             th *= -.4;

@@ -15,16 +15,17 @@ let statesInput         = document.getElementById("states-input");
 let startingStateInput  = document.getElementById("starting-state-input");
 let acceptingStateInput = document.getElementById("accepting-state-input");
 let generateFSMButton   = document.getElementById("generate-fsm");
-let transitionTable     = document.getElementById("transition-table");
+let transitionElement   = document.getElementById("transition-element");
 
 /***************
  * Page Logic
 ***************/
-acceptInput.value = "< Type Input String Here >";
 
 generateButton.onclick = function (params) {
     popup.style.display    = "block";
     acceptButton.className = "hvr-underline-from-center pure-button button-accept";
+    acceptInput.className  = "accept-input";
+    updateTransistionTable();
 }
 
 var acceptPromise;
@@ -40,17 +41,81 @@ acceptButton.onclick = function (params) {
  * Generator Logic
 ********************/
 
+// Biggest mess ever created BUT HEY IT WORKS FAM
+let transition = {}; // { '1' = { 'a' : [el1, el2], ... } }
+let updateTransistionTable = function () {
+    let alphabet = [];
+    let states   = [];
+
+    // parse alphabet
+    let alphabetString = alphabetInput.value.trim();
+
+    if (alphabetString.indexOf(' ') >= 0)
+        throw "Please do not have spaces in alphabet string input!";
+    
+    alphabet = alphabetString.split(',');
+
+    // parse states
+    let statesString = statesInput.value.trim();
+
+    if (statesString.indexOf(' ') >= 0)
+        throw "Please do not have spaces in states string input!";
+    
+    states = statesString.split(',');
+
+    // Delete current child elements
+    while (transitionElement.firstChild) {
+        transitionElement.removeChild(transitionElement.firstChild);
+    }
+
+    let createStateTransitionElement = function (div, state, symbol){
+        let stateTransitionInputElement = document.createElement("div");
+        stateTransitionInputElement.classList.add('transition-table-row-element');
+
+        let label           = document.createElement("p");
+        label.innerHTML     = `Symbol: '${symbol}'`;
+        label.style.margin  = 0;
+        label.style.marginLeft = "2%";
+        let inputElement    = document.createElement("input");
+        inputElement.classList.add('transition-table-row-element-input');
+
+        stateTransitionInputElement.appendChild(label);
+        stateTransitionInputElement.appendChild(inputElement);
+        
+        div.appendChild(stateTransitionInputElement);
+        return inputElement;
+    }
+
+    for (let state of states) {
+        transition[state] = { };
+        let div = document.createElement("div");
+        div.classList.add('transition-table-row');
+        let label = document.createElement("h3");
+        label.innerHTML = "Transition function for " + state;
+        label.style.textAlign = "center";
+        div.appendChild(label);
+        for (let symbol of alphabet) {
+            transition[state][symbol] = createStateTransitionElement(div, state, symbol);
+        }
+        transitionElement.appendChild(div);
+    }
+
+    console.log(transition);
+}
+
 span.onclick = function () {
-    popup.style.display    = "none";
+    popup.style.display = "none";
+    if (fsm) return; // so that we can continue to test input on current DFA
     acceptButton.className = "hvr-underline-from-center pure-button button-accept pure-button-disabled";
+    acceptInput.className  = "accept-input input-disable";
 }
 
 alphabetInput.onblur = function () {
-    
+    updateTransistionTable();
 }
 
 statesInput.onblur = function () {
-
+    updateTransistionTable();
 }
 
 generateFSMButton.onclick = function () {
@@ -93,6 +158,22 @@ generateFSMButton.onclick = function () {
 
     // accepting state
     states[acceptingStateInput.value.trim()].accepting = true;
+
+    // transition
+    let transitionData = transition;
+
+    for (let stateSymbol in transitionData) {
+        let transitionElement = transitionData[stateSymbol];
+        for (let transitionSymbol in transitionElement) {
+            let inputElement = transitionElement[transitionSymbol];
+            if (inputElement.value === "")
+                continue;
+            console.log(inputElement.value);
+            states[stateSymbol].transition[transitionSymbol] = inputElement.value.split(',');
+        }
+    }
+
+    console.log(states);
 
     // Finally initialise fsm object    
     fsm = new fsmConstructor(

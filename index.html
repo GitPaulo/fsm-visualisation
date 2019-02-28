@@ -20,10 +20,8 @@
             <button class="hvr-underline-from-center pure-button button-generate" id="generate" style="flex-grow: 1; text-align: center;">Generate
                 Automaton</button>
             <div style="flex-grow: 1; text-align: center;">
-                <input id="accept-input" type="text">
-                <button class="hvr-underline-from-center pure-button button-accept pure-button-disabled" id="accept"
-                    style="width:100%; text-align: center;">Run Accept Function</button>
-                </di>
+                <input id="accept-input" class="accept-input input-disable" type="text" value="< Type Input String Here >">
+                <button class="hvr-underline-from-center pure-button button-accept pure-button-disabled" id="accept" style="width:100%; text-align: center;">Run Accept Function</button>
             </div>
         </div>
         <!-- The popup -->
@@ -35,7 +33,7 @@
                     <h1>FSM Generator</h1>
                     <hr>
                 </div>
-                <div>
+                <div class="popup-form">
                     <h4>FSM Type</h4>
                     <select id="fsm-select">
                         <option value="DFA">DFA</option>
@@ -47,25 +45,22 @@
                     <h4>States</h4>
                     <input id="states-input" type="text" value="A,B,C">
                     <h4>Starting State</h4>
-                    <input id="starting-state-input" type="text" value="A"></input>
+                    <input id="starting-state-input" type="text" value="A">
                     <h4>Accepting State</h4>
-                    <input id="accepting-state-input" type="text" value="C"></input>
+                    <input id="accepting-state-input" type="text" value="C">
                     <div id="transition-container">
                         <h3>Transition</h3>
                         <hr>
-                        <table class="fsm-transition-table" id="fsm-transition-table" style="width:100%"></table>
+                        <div class="fsm-transition-element" id="transition-element" style="width:100%"></div>
                         <hr>
                     </div>
-                    <button id="generate-fsm" class="hvr-underline-from-center pure-button" style="width: 100%;">Generate
-                        FSM</button>
+                    <button id="generate-fsm" class="hvr-underline-from-center pure-button" style="width: 100%;">Generate FSM</button>
                 </div>
             </div>
         </div>
     </div>
 </body>
-
 <script src="./js/MousePressFun.js"></script>
 <script src="./js/sketch.js"></script>
 <script src="./js/index.js"></script>
-
 </html>

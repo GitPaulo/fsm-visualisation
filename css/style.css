@@ -51,7 +51,7 @@
     border-color: white;
 }
 
-#accept-input {
+.accept-input {
     width: 100%;
     height: 35%;
     background: rgb(30, 30, 30);
@@ -61,6 +61,14 @@
     text-align: center;
     border-style: solid;
     border-color: white;
+    disabled: true;
+}
+
+.input-disable {
+    pointer-events: none;
+    border: 1px solid grey;
+    background-color: lightgrey;
+    background: grey;
 }
 
 /******************
@@ -103,4 +111,21 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.transition-table-row {
+    display: block;
+    color: white;
+    background:  rgb(50, 50, 50);
+}
+
+.transition-table-row-element {
+}
+
+.transition-table-row-element-input {
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 2%; 
+    width: 96%;
+    color: black;
 }
