@@ -75,6 +75,28 @@
 * Generator CSS
 ******************/
 
+/* pop out class */
+.popout {
+    animation: popout 1s ease;
+    -webkit-animation: popout .8s ease;
+}
+
+@keyframes popout {
+    from{transform:scale(0)}
+    to{transform:scale(1)}
+}
+
+@-webkit-keyframes popout {
+    from{-webkit-transform:scale(0)}
+    to{-webkit-transform:scale(1)}
+}
+
+/* slide out class */
+.slide-out { 
+    transform: translateY(-200vh) rotate(0deg);  
+    transition: all 1.25s ease;
+}
+
 /* The popup (background) */
 .popup {
     display: none;
