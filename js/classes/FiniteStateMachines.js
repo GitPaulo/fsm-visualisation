@@ -134,7 +134,7 @@ class FiniteStateMachine {
 			for (let stateSymbol in this.states) {
 				let state = this.getState(stateSymbol);
 				for (let transitionSymbol in state.transition) {
-					let transitionStateSymbolArray = state.transition[transitionSymbol].constructor === Array 
+					let transitionStateSymbolArray = state.transition[transitionSymbol].constructor === Array
 														? state.transition[transitionSymbol] : [state.transition[transitionSymbol]];
 					for (let transitionStateSymbol of transitionStateSymbolArray) {
 						let edgeSymbol = `${stateSymbol},${transitionStateSymbol}`;
@@ -157,7 +157,7 @@ class FiniteStateMachine {
 							let newTransistionSymbol = edgeObject.symbol + "," + transitionSymbol;
 							this.GUIElement.transitions[edgeSymbol].symbol = newTransistionSymbol;
 						}
-					} 
+					}
 				}
 			}
 		}
@@ -175,7 +175,7 @@ class FiniteStateMachine {
 			let edgeObject = transitionElements[edgeSymbol];
 			edgeObject.draw(env);
 		}
-		
+
 		// draw states
 		for (let stateSymbol in stateElements) {
 			let stateElement = stateElements[stateSymbol];
@@ -185,7 +185,7 @@ class FiniteStateMachine {
 }
 
 /*
- * DFA extending parent class  
+ * DFA extending parent class
  * Currently I do not represent dead states. Leave it like that? Matters on NFA --> DFA conversion too!
  */
 const SLEEP_TIME = 700;
@@ -204,7 +204,7 @@ class DFA extends FiniteStateMachine {
 			await sleep(SLEEP_TIME);
 			stateElement.highlight([200, 200, 200]);
 		}
-		
+
 		for (let i = 0; i < string.length; i++) {
 			let symbol = string.charAt(i);
 			// Check if symbol is in alphabet
@@ -223,7 +223,7 @@ class DFA extends FiniteStateMachine {
 
 				let prevColorS = transitionStateElement.color;
 				let prevColorT = transitionGUIElement.color;
-				
+
 				// Highlight Transition
 				transitionGUIElement.highlight([255, 100, 100]);
 				await sleep(SLEEP_TIME);
@@ -232,7 +232,7 @@ class DFA extends FiniteStateMachine {
 				// Highlight Next Node
 				transitionStateElement.highlight([255, 100, 100]);
 				await sleep(SLEEP_TIME);
-				transitionStateElement.highlight(prevColorS);  
+				transitionStateElement.highlight(prevColorS);
 			}
 
 			state = transitionState;
@@ -266,7 +266,7 @@ class NFA extends FiniteStateMachine {
 		// If starting state is not first they swap to be first
 		if (S[0] !== startingStateSymbol) {
 			for (let i = 0; i < S.length; i++) {
-				if (S[i] === startingStateSymbol) { 
+				if (S[i] === startingStateSymbol) {
 					[S[0], S[i]] = [S[i], S[0]];
 				}
 			}

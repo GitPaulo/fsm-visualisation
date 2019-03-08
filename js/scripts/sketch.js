@@ -57,7 +57,7 @@ var environment = function (env) {
 
 		// If it's time for a new point
 		if (env.millis() > next && painting) {
-			// Grab mouse position      
+			// Grab mouse position
 			current.x = env.mouseX;
 			current.y = env.mouseY;
 

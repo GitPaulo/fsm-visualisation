@@ -1,6 +1,6 @@
 
 // Class for mouse press fun stuff
-class Particle {
+class Particle { 
 	constructor(position, force, hue, env) {
 		this.position = env.createVector(position.x, position.y);
 		this.velocity = env.createVector(force.x, force.y);

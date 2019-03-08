@@ -27,7 +27,7 @@ class StateElementGUI {
 	isMouseOver() {
 		// im lazy
 		let env = this.env;
-		
+
 		return env.dist(env.mouseX, env.mouseY, this.x, this.y) <= this.radius / 2;
 	}
 
@@ -112,11 +112,11 @@ class TransistionElementGUI {
 		this.env         = env;
 		this.color       = [80, 80, 80];
 		this.textColor   = [255, 255, 255];
-		this.thickness   = 15;
+	   this.thickness   = 15;
 		this.isDragging  = false;
 		this.isLoop      = stateTo === stateFrom;
-		this.offset      = { 
-			x: 0, 
+		this.offset      = {
+			x: 0,
 			y: 0
 		};
 	}
@@ -163,8 +163,8 @@ class TransistionElementGUI {
 
 		// Calculate offset :)
 		let coord_offset = 15;
-		this.offset = { 
-			x: this.needsOffset ? coord_offset : 0, 
+		this.offset = {
+			x: this.needsOffset ? coord_offset : 0,
 			y: this.needsOffset ? coord_offset : 0,
 		};
 

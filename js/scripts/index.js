@@ -56,7 +56,7 @@ let updateTransistionTable = function () {
 
 	if (alphabetString.indexOf(' ') >= 0)
 		return alert("Please do not have spaces in alphabet string input!");
-	
+
 	alphabet = alphabetString.split(',');
 
 	// parse states
@@ -64,7 +64,7 @@ let updateTransistionTable = function () {
 
 	if (statesString.indexOf(' ') >= 0)
 		return alert("Please do not have spaces in states string input!");
-	
+
 	states = statesString.split(',');
 
 	// Delete current child elements
@@ -85,7 +85,7 @@ let updateTransistionTable = function () {
 
 		stateTransitionInputElement.appendChild(label);
 		stateTransitionInputElement.appendChild(inputElement);
-		
+
 		div.appendChild(stateTransitionInputElement);
 		return inputElement;
 	}
@@ -133,7 +133,7 @@ generateFSMButton.onclick = function () {
 
 	if (alphabetString.indexOf(' ') >= 0)
 		return alert("Please do not have spaces in alphabet string input!");
-	
+
 	alphabet = alphabetString.split(',');
 
 	if (alphabet.length[0] === "")
@@ -144,7 +144,7 @@ generateFSMButton.onclick = function () {
 
 	if (statesString.indexOf(' ') >= 0)
 		return alert("Please do not have spaces in states string input!");
-	
+
 	let statesArray = statesString.split(',');
 
 	if (statesArray[0] === "")
@@ -159,7 +159,7 @@ generateFSMButton.onclick = function () {
 
 	// starting state
 	startingStateSymbol = startingStateInput.value.trim();
-	
+
 	if (startingStateSymbol === "")
 		return alert("There must be one starting state!");
 
@@ -168,7 +168,7 @@ generateFSMButton.onclick = function () {
 
 	if (acceptingStateString.indexOf(' ') >= 0)
 		return alert("Please do not have spaces in states string input!");
-	 
+
 	let acceptingStatesArray = acceptingStateString.split(',');
 
 	if (acceptingStatesArray[0] === "")
@@ -194,10 +194,10 @@ generateFSMButton.onclick = function () {
 
 	console.log(states);
 
-	// Finally initialise fsm object    
+	// Finally, initialise fsm object
 	fsm = new fsmConstructor(
 		alphabet,
-		states, 
+		states,
 		startingStateSymbol
 	);
 

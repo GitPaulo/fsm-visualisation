@@ -15,25 +15,25 @@ window.d2d3 = function (x1, y1, x2, y2, x3, y3) {
 }
 
 window.drawArrow = function (sx, sy, ang, offset, env) {
-	env.push() //start new drawing state
-		env.translate(sx, sy); //translates to the destination vertex
-		env.rotate(ang); //rotates the arrow point
-		env.triangle(-offset * 0.5, offset, offset * 0.5, offset, 0, -offset / 2); //draws the arrow point as a triangle
+	env.push() // start new drawing state
+		env.translate(sx, sy); // translates to the destination vertex
+		env.rotate(ang); // rotates the arrow point
+		env.triangle(-offset * 0.5, offset, offset * 0.5, offset, 0, -offset / 2); // draws the arrow point as a triangle
 	env.pop();
 }
 
 window.curveBetween = function (x1, y1, x2, y2, d, h, flip, env) {
-	//find two control points off this line
+	// find two control points off this line
 	var original = p5.Vector.sub(p5.createVector(x2, y2), env.createVector(x1, y1));
 	var inline   = original.copy().normalize().mult(original.mag() * d);
 	var rotated  = inline.copy().rotate(env.radians(90) + flip * env.radians(180)).normalize().mult(original.mag() * h);
 	var p1       = p5.Vector.add(p5.Vector.add(inline, rotated), env.createVector(x1, y1));
 
-	//line(x1, y1, p1.x, p1.y); //show control line
+	// line(x1, y1, p1.x, p1.y); //show control line
 	rotated.mult(-1);
 	var p2 = p5.Vector.add(p5.Vector.add(inline, rotated).mult(-1), env.createVector(x2, y2));
 
-	//line(x2, y2, p2.x, p2.y); //show control line
+	// line(x2, y2, p2.x, p2.y); //show control line
 	env.bezier(x1, y1, p1.x, p1.y, p2.x, p2.y, x2, y2)
 }
 
