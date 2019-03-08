@@ -16,7 +16,7 @@ let statesInput         = document.getElementById("generator-states-input");
 let startingStateInput  = document.getElementById("generator-startingstate-input");
 let acceptingStateInput = document.getElementById("generator-acceptingstate-input");
 let generateFSMButton   = document.getElementById("generator-generate-fsm");
-let generatorContent     = document.getElementById("generator-content");
+let generatorContent    = document.getElementById("generator-content");
 let transitionElement   = document.getElementById("generator-transition-element");
 
 /******************************
