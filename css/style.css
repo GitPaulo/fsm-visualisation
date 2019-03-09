@@ -71,6 +71,62 @@
     background: grey;
 }
 
+/* floating button */
+.label-container {
+    position: fixed;
+    top: 48px;
+    right: 105px;
+    display: table;
+    visibility: hidden;
+}
+
+.label-text {
+    color: #FFF;
+    background: rgba(51, 51, 51, 0.5);
+    display: table-cell;
+    vertical-align: middle;
+    padding: 10px;
+    border-radius: 3px;
+}
+
+.label-arrow {
+    display: table-cell;
+    vertical-align: middle;
+    color: #333;
+    opacity: 0.5;
+}
+
+.float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    top: 40px;
+    right: 40px;
+    background-color: rgb(108, 25, 141);
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    vertical-align: 50%;
+    font-size: 4vh;
+    box-shadow: 2px 2px 8px rgb(0, 0, 0);
+}
+
+.my-float {
+    font-size: 24px;
+    margin-top: 18px;
+}
+
+a.float+div.label-container {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease;
+}
+
+a.float:hover+div.label-container {
+    visibility: visible;
+    opacity: 1;
+}
+
 /******************
 * Generator CSS
 ******************/
@@ -82,18 +138,28 @@
 }
 
 @keyframes popout {
-    from{transform:scale(0)}
-    to{transform:scale(1)}
+    from {
+        transform: scale(0)
+    }
+
+    to {
+        transform: scale(1)
+    }
 }
 
 @-webkit-keyframes popout {
-    from{-webkit-transform:scale(0)}
-    to{-webkit-transform:scale(1)}
+    from {
+        -webkit-transform: scale(0)
+    }
+
+    to {
+        -webkit-transform: scale(1)
+    }
 }
 
 /* slide out class */
-.slide-out { 
-    transform: translateY(-200vh) rotate(0deg);  
+.slide-out {
+    transform: translateY(-200vh) rotate(0deg);
     transition: all 1.25s ease;
 }
 
@@ -138,16 +204,15 @@
 .transition-table-row {
     display: block;
     color: white;
-    background:  rgb(50, 50, 50);
+    background: rgb(50, 50, 50);
 }
 
-.transition-table-row-element {
-}
+.transition-table-row-element {}
 
 .transition-table-row-element-input {
     margin-left: 2%;
     margin-right: 2%;
-    margin-bottom: 2%; 
+    margin-bottom: 2%;
     width: 96%;
     color: black;
 }

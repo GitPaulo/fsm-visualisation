@@ -2,44 +2,113 @@
 var fsm           = null;
 var acceptPromise = null;
 
+// Default Values - Configurable in settings popup
+const SETTINGS = {
+    sleep_interval           : 700,
+    state_element_color      : [240, 240, 240],
+    state_text_color         : [255, 255, 255],
+    state_text_size          : 80,
+    state_radius             : 100,
+    transition_element_color : [80, 80, 80],
+    transition_text_color    : [255, 255, 255],
+    transistion_text_size    : 60,
+    transition_thickness     : 15,
+}
+
 // Page core elements
 let generateButton = document.getElementById("generate");
 let acceptButton   = document.getElementById("accept");
 let acceptInput    = document.getElementById("accept-input");
-let popup          = document.getElementById('generator');
-let closeButton    = document.getElementsByClassName("popup-close-button")[0];
+let settingsButton = document.getElementById("settings-button");
 
-// Generator field elements
-let fsmSelect           = document.getElementById("generator-fsm-select");
-let alphabetInput       = document.getElementById("generator-alphabet-input");
-let statesInput         = document.getElementById("generator-states-input");
-let startingStateInput  = document.getElementById("generator-startingstate-input");
-let acceptingStateInput = document.getElementById("generator-acceptingstate-input");
-let generateFSMButton   = document.getElementById("generator-generate-fsm");
-let generatorContent    = document.getElementById("generator-content");
-let transitionElement   = document.getElementById("generator-transition-element");
+// Generator elements
+let generator            = document.getElementById('generator');
+let generatorContent     = document.getElementById("generator-content");
+let closeGeneratorButton = document.getElementById("generator-close");
+let fsmSelect            = document.getElementById("generator-fsm-select");
+let alphabetInput        = document.getElementById("generator-alphabet-input");
+let statesInput          = document.getElementById("generator-states-input");
+let startingStateInput   = document.getElementById("generator-startingstate-input");
+let acceptingStateInput  = document.getElementById("generator-acceptingstate-input");
+let generateFSMButton    = document.getElementById("generator-generate-fsm");
+let transitionElement    = document.getElementById("generator-transition-element");
+
+// Settings elements
+let settings                    = document.getElementById("settings");
+let settingsContent             = document.getElementById("settings-content");
+let closeSettingsButton         = document.getElementById("settings-close");
+let speedInput                  = document.getElementById("settings-speed-input");
+let stateRadiusInput            = document.getElementById("settings-state-radius");
+let stateElementColorInput      = document.getElementById("settings-state-element-color");
+let stateTextColorInput         = document.getElementById("settings-state-text-color");
+let stateTextSizeInput          = document.getElementById("settings-state-text-size");
+let transitionElementColorInput = document.getElementById("settings-transition-element-color");
+let transitionTextColorInput    = document.getElementById("settings-transition-text-color");
+let transitionTextSizeInput     = document.getElementById("settings-transition-text-size");
+let transitionThicknessInput    = document.getElementById("settings-transition-thickness");
+let settingsSaveButton          = document.getElementById("settings-save");
 
 /******************************
  *      Page Logic
 ******************************/
 
-generateButton.onclick = function (params) {
-    popup.style.display    = "block";
-    acceptButton.className = "hvr-underline-from-center pure-button button-accept";
-    acceptInput.className  = "accept-input";
+settingsButton.onclick = function () {
+    settings.style.display = "block";
+};
+
+generateButton.onclick = function () {
+    generator.style.display = "block";
+    acceptButton.className  = "hvr-underline-from-center pure-button button-accept";
+    acceptInput.className   = "accept-input";
 
     updateTransistionTable();
-}
+};
 
-
-acceptButton.onclick = function (params) {
+acceptButton.onclick = function () {
     if (fsm === null) {
         alert("Must generate a FSM first!");
         return;
     }
 
     acceptPromise = fsm.accept(acceptInput.value).then((r) => (console.log(r) || true) && alert(`Accepted: ${r.accepted}\nMessage: ${r.message}`));
-}
+};
+
+/******************************
+ *      Settings Logic
+******************************/
+// Load Defaults
+
+(function (){
+    speedInput.value                  = SETTINGS.sleep_interval;
+    stateRadiusInput.value            = SETTINGS.state_radius;
+    stateTextSizeInput.value          = SETTINGS.state_text_size;
+    stateElementColorInput.value      = rgbToHex(...SETTINGS.state_element_color);
+    stateTextColorInput.value         = rgbToHex(...SETTINGS.state_text_color);
+    transitionElementColorInput.value = rgbToHex(...SETTINGS.transition_element_color);
+    transitionTextColorInput.value    = rgbToHex(...SETTINGS.transition_text_color);
+    transitionTextSizeInput.value     = SETTINGS.transistion_text_size;
+    transitionThicknessInput.value    = SETTINGS.transition_thickness;
+})();
+
+// Event Functions
+closeSettingsButton.onclick = async function () {
+    settingsContent.classList.add("slide-out");
+    await setTimeout(() => { settings.style.display = "none";  settingsContent.classList.remove("slide-out")}, 600);
+};
+
+settingsSaveButton.onclick = function () {
+    SETTINGS.sleep_interval           = Number(speedInput.value);
+    SETTINGS.state_radius             = Number(stateRadiusInput.value);
+    SETTINGS.state_text_size          = Number(stateTextSizeInput.value);
+    SETTINGS.state_element_color      = hexToRgb(stateElementColorInput.value);
+    SETTINGS.state_text_color         = hexToRgb(stateTextColorInput.value);
+    SETTINGS.transition_element_color = hexToRgb(transitionElementColorInput.value);
+    SETTINGS.transition_text_color    = hexToRgb(transitionTextColorInput.value)
+    SETTINGS.transistion_text_size    = Number(transitionTextSizeInput.value);
+    SETTINGS.transition_thickness     = Number(transitionThicknessInput.value);
+
+    settings.style.display = "none";
+};
 
 /******************************
  *      Generator Logic
@@ -106,15 +175,15 @@ let updateTransistionTable = function () {
 
     console.log(transition);
 }
-
-closeButton.onclick = async function () {
-    //popup.style.display = "none";
+ 
+closeGeneratorButton.onclick = async function () {
+    //generator.style.display = "none";
     generatorContent.classList.add("slide-out");
-    await setTimeout(() => { popup.style.display = "none";  generatorContent.classList.remove("slide-out")}, 600);
+    await setTimeout(() => { generator.style.display = "none";  generatorContent.classList.remove("slide-out")}, 600);
     if (fsm) return; // so that we can continue to test input on current DFA
     acceptButton.className = "hvr-underline-from-center pure-button button-accept pure-button-disabled";
     acceptInput.className  = "accept-input input-disable";
-}
+};
 
 generateFSMButton.onclick = function () {
     let fsmType             = fsmSelect.value;
@@ -201,8 +270,8 @@ generateFSMButton.onclick = function () {
         startingStateSymbol
     );
 
-    popup.style.display = "none";
-}
+    generator.style.display = "none";
+};
 
 alphabetInput.onblur = updateTransistionTable;
 statesInput.onblur   = updateTransistionTable;

@@ -45,14 +45,14 @@ class Path {
         this.particles.push(new Particle(position, force, this.hue, this.env));
     }
 
-    // Display plath
+    // Display path
     update() {
         for (let i = 0; i < this.particles.length; i++) {
             this.particles[i].update();
         }
     }
 
-    // Display plath
+    // Display path
     display() {
         // Loop through backwards
         for (let i = this.particles.length - 1; i >= 0; i--) {

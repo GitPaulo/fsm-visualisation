@@ -9,6 +9,47 @@
 
 <body>
     <div class="main">
+        <!-- Settings floating button -->
+        <a id="settings-button" href="#" class="float"> &#9881;</a>
+        <div class="label-container">
+        <div class="label-text">Settings</div>
+            <i class="fa fa-play label-arrow"></i>
+        </div>
+        <!-- Settings Panel -->
+        <div id="settings" class="popup">
+            <div id="settings-content" class="popup-content popout" >
+                <!-- Header of Popup -->
+                <div class="popup-header">
+                    <span class="popup-close-button" id="settings-close">&times;</span>
+                    <h1>Animation Settings</h1>
+                    <hr>
+                </div>
+                <!-- Body of Popup (form) -->
+                <script src="./libraries/jscolor.js"></script>
+                <div class="popup-form">
+                    <h4>Animation Step Speed (ms)</h4>
+                    <input id="settings-speed-input" type="text" value="800">
+                    <h4>State Element Radius</h4>
+                    <input id="settings-state-radius" type="text" value="100">
+                    <h4>State Element Color</h4>
+                    <input class="jscolor" id="settings-state-element-color" value="ab2567">
+                    <h4>State Text Color</h4>
+                    <input class="jscolor" id="settings-state-text-color" value="ab2567">
+                    <h4>State Text Size</h4>
+                    <input id="settings-state-text-size" type="text" value="800">
+                    <h4>Transition Element Color</h4>
+                    <input class="jscolor" id="settings-transition-element-color" value="ab2567">
+                    <h4>Transition Text Color</h4>
+                    <input class="jscolor" id="settings-transition-text-color" value="ab2567">
+                    <h4>Transition Text Size</h4>
+                    <input id="settings-transition-text-size" type="text" value="800">
+                    <h4>Transition Thickness</h4>
+                    <input id="settings-transition-thickness" type="text" value="15">
+                    <hr>
+                    <button id="settings-save" class="hvr-underline-from-center pure-button" style="width: 100%;">Save Settings</button>
+                </div>
+            </div>
+        </div>
         <!-- P5.js Canvas -->
         <div class="canvas" id="canvas"></div>
         <!-- Canvas Controls -->
@@ -25,7 +66,7 @@
             <div id="generator-content" class="popup-content popout">
                 <!-- Header of Popup -->
                 <div class="popup-header">
-                    <span class="popup-close-button">&times;</span>
+                    <span class="popup-close-button" id="generator-close">&times;</span>
                     <h1>FSM Generator</h1>
                     <hr>
                 </div>

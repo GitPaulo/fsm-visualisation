@@ -19,8 +19,8 @@ class StateElementGUI {
         this.index       = index
         this.isDragging  = false;
         this.env         = env;
-        this.color       = [240, 240, 240];
-        this.textColor   = [255, 255, 255];
+        this.color       = SETTINGS.state_element_color;
+        this.textColor   = SETTINGS.state_text_color;
     }
 
     /* Check if mouse is over */
@@ -89,7 +89,7 @@ class StateElementGUI {
 
         env.textFont(env.CAPS_FONT);
         env.fill(24, 24, 24);
-        env.textSize(80);
+        env.textSize(SETTINGS.state_text_size);
 
         let tw = env.textWidth(this.symbol);
         let th = env.textSize(this.symbol);
@@ -110,9 +110,9 @@ class TransistionElementGUI {
         this.direction   = direction;
         this.needsOffset = needsOffset;
         this.env         = env;
-        this.color       = [80, 80, 80];
-        this.textColor   = [255, 255, 255];
-       this.thickness   = 15;
+        this.color       = SETTINGS.transition_element_color;
+        this.textColor   = SETTINGS.transition_text_color;
+        this.thickness   = SETTINGS.transition_thickness;
         this.isDragging  = false;
         this.isLoop      = stateTo === stateFrom;
         this.offset      = {
@@ -217,7 +217,7 @@ class TransistionElementGUI {
         // Text
         env.fill(...this.textColor);
         env.textFont(env.NORMAL_FONT);
-        env.textSize(60);
+        env.textSize(SETTINGS.transistion_text_size);
 
         let extra = this.isLoop ? 45 : 10;
         let tw    = env.textWidth(this.symbol);

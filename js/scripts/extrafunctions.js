@@ -10,6 +10,24 @@ window.busySleep = function (ms) {
     }
 }
 
+let componentToHex = function (c){
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+window.rgbToHex = function (r, g, b){
+    return "" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+window.hexToRgb = function (hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec("#"+hex);
+    return result ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16)
+    ] : null;
+}
+
 window.d2d3 = function (x1, y1, x2, y2, x3, y3) {
     return Math.abs((y2 - y1) * x3 - (x2 - x1) * y3 + x2 * y1 - y2 * x1) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
 }

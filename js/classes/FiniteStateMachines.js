@@ -121,7 +121,7 @@ class FiniteStateMachine {
                 let stateGUI   = new StateElementGUI(state.symbol, state.accepting, isStarting, {
                     x: env.random(offset, env.width - offset),
                     y: env.random(offset, env.height - offset),
-                    radius: 100,
+                    radius: SETTINGS.state_radius,
                     index : i
                 }, env);
 
@@ -188,7 +188,6 @@ class FiniteStateMachine {
  * DFA extending parent class
  * Currently I do not represent dead states. Leave it like that? Matters on NFA --> DFA conversion too!
  */
-const SLEEP_TIME = 700;
 class DFA extends FiniteStateMachine {
     constructor(alphabet, states, starting) {
         super(alphabet, states, starting);
@@ -201,7 +200,7 @@ class DFA extends FiniteStateMachine {
         if (this.hasGUIElementInitialised()) {
             let stateElement = this.getStateGUIElementBySymbol(state.symbol);
             stateElement.highlight([255, 100, 100]);
-            await sleep(SLEEP_TIME);
+            await sleep(SETTINGS.sleep_interval);
             stateElement.highlight([200, 200, 200]);
         }
 
@@ -226,12 +225,12 @@ class DFA extends FiniteStateMachine {
 
                 // Highlight Transition
                 transitionGUIElement.highlight([255, 100, 100]);
-                await sleep(SLEEP_TIME);
+                await sleep(SETTINGS.sleep_interval);
                 transitionGUIElement.highlight(prevColorT);
 
                 // Highlight Next Node
                 transitionStateElement.highlight([255, 100, 100]);
-                await sleep(SLEEP_TIME);
+                await sleep(SETTINGS.sleep_interval);
                 transitionStateElement.highlight(prevColorS);
             }
 
