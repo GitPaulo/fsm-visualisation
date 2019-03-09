@@ -264,7 +264,7 @@ generateFSMButton.onclick = function () {
     console.log(states);
 
     // Finally, initialise fsm object
-    new fsmConstructor(
+    fsm = new fsmConstructor(
         alphabet,
         states,
         startingStateSymbol
