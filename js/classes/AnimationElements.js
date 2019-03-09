@@ -4,21 +4,15 @@ var isDragEntity = (ent) => {
 }
 
 class StateElementGUI {
-    constructor(symbol, isAccepting, isStarting, {
-        x,
-        y,
-        radius,
-        index
-    }, env) {
+    constructor(symbol, isAccepting, isStarting, pos, index, env) {
         this.symbol      = symbol;
         this.isAccepting = isAccepting;
         this.isStarting  = isStarting;
-        this.x           = x;
-        this.y           = y;
-        this.radius      = radius;
-        this.index       = index
         this.isDragging  = false;
+        this.pos         = pos;
+        this.index       = index;
         this.env         = env;
+        this.radius      = SETTINGS.state_radius;
         this.color       = SETTINGS.state_element_color;
         this.textColor   = SETTINGS.state_text_color;
     }
@@ -28,7 +22,7 @@ class StateElementGUI {
         // im lazy
         let env = this.env;
 
-        return env.dist(env.mouseX, env.mouseY, this.x, this.y) <= this.radius / 2;
+        return env.dist(env.mouseX, env.mouseY, this.pos.x, this.pos.y) <= this.radius / 2;
     }
 
     /* Called when mouse is released */
@@ -58,14 +52,14 @@ class StateElementGUI {
         env.stroke(127, 63, 120);
 
         if (isDragEntity(this)) {
-            this.x = env.mouseX;
-            this.y = env.mouseY;
+            this.pos.x = env.mouseX;
+            this.pos.y = env.mouseY;
         }
 
         if (this.isStarting) {
             // arrow point
-            let sx = this.x - this.radius;
-            let sy = this.y;
+            let sx = this.pos.x - this.radius;
+            let sy = this.pos.y;
 
             var offset = 30;
             env.fill(225, 95, 45);
@@ -77,7 +71,7 @@ class StateElementGUI {
         if (this.isAccepting) {
             env.fill(140, 240, 140);
             let r = this.radius + 20;
-            env.ellipse(this.x, this.y, r, r);
+            env.ellipse(this.pos.x, this.pos.y, r, r);
         }
 
         if (this.isMouseOver())
@@ -85,7 +79,7 @@ class StateElementGUI {
         else
             env.fill(...this.color);
 
-        env.ellipse(this.x, this.y, this.radius, this.radius);
+        env.ellipse(this.pos.x, this.pos.y, this.radius, this.radius);
 
         env.textFont(env.CAPS_FONT);
         env.fill(24, 24, 24);
@@ -93,7 +87,7 @@ class StateElementGUI {
 
         let tw = env.textWidth(this.symbol);
         let th = env.textSize(this.symbol);
-        env.text(this.symbol, this.x - tw / 2, this.y + th / 2.8);
+        env.text(this.symbol, this.pos.x - tw / 2, this.pos.y + th / 2.8);
     }
 
     highlight(color) {
@@ -125,10 +119,10 @@ class TransistionElementGUI {
         // Over complicate the way to calculate if you are hovering a transistion line
         // HIGH SCHOOL MATHS TO THE EXTREME BOYS - IT WORKS BTW
         let env  = this.env;
-        let sf_x = this.stateFrom.x + this.offset.x;
-        let sf_y = this.stateFrom.y + this.offset.y;
-        let st_x = this.stateTo.x   + this.offset.x;
-        let st_y = this.stateTo.y   + this.offset.y;
+        let sf_x = this.stateFrom.pos.x + this.offset.x;
+        let sf_y = this.stateFrom.pos.y + this.offset.y;
+        let st_x = this.stateTo.pos.x   + this.offset.x;
+        let st_y = this.stateTo.pos.y   + this.offset.y;
 
         let d      = d2d3(sf_x, sf_y, st_x, st_y, env.mouseX, env.mouseY);
         let e1dist = env.dist(sf_x, sf_y, env.mouseX, env.mouseY);
@@ -174,10 +168,10 @@ class TransistionElementGUI {
         }
 
         // points
-        let sf_x = this.stateFrom.x + this.offset.x;
-        let sf_y = this.stateFrom.y + this.offset.y;
-        let st_x = this.stateTo.x   + this.offset.x;
-        let st_y = this.stateTo.y   + this.offset.y;
+        let sf_x = this.stateFrom.pos.x + this.offset.x;
+        let sf_y = this.stateFrom.pos.y + this.offset.y;
+        let st_x = this.stateTo.pos.x   + this.offset.x;
+        let st_y = this.stateTo.pos.y   + this.offset.y;
 
         // midpoint
         let midpoint = {

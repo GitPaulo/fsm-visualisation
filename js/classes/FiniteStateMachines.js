@@ -121,9 +121,7 @@ class FiniteStateMachine {
                 let stateGUI   = new StateElementGUI(state.symbol, state.accepting, isStarting, {
                     x: env.random(offset, env.width - offset),
                     y: env.random(offset, env.height - offset),
-                    radius: SETTINGS.state_radius,
-                    index : i
-                }, env);
+                }, i, env); 
 
                 this.GUIElement.states[stateSymbol] = stateGUI;
                 i++;
@@ -256,32 +254,22 @@ class NFA extends FiniteStateMachine {
      * new NFA(["a","b","c"],{1:{transition:{a:["2","3"],b:"2"},accepting:!1},2:{transition:{a:"3",b:["1","3"],c:["4","3"]},accepting:!1},3:{transition:{c:"4"},accepting:!1},4:{transition:{a:"2"},accepting:!0}},"1");
      */
     async accept(string) {
-        let S = this.getStatesSymbolArray();
-        let C = [];
-
+        // Initialise tables
         let n = string.length;
-        let startingStateSymbol = this.starting.stateSymbol;
+        let S = [this.starting.symbol];
+        let C = [];
+        
+        for (let i = 0; i < n; i++)
+            C[i] = [];
 
-        // If starting state is not first they swap to be first
-        if (S[0] !== startingStateSymbol) {
-            for (let i = 0; i < S.length; i++) {
-                if (S[i] === startingStateSymbol) {
-                    [S[0], S[i]] = [S[i], S[0]];
-                }
-            }
-        }
-
-        for (let i = 1; i <= n; i++) {
-            let inputSymbol = string.charAt(i - 1);
-
+        for (let i = 0; i < n; i++) {
+            let inputSymbol = string.charAt(i);
+            console.log(inputSymbol, C, S);
             if (!this.isValidSymbol(inputSymbol))
-                return new AcceptanceResult(string, false, "An invalid symbol was found in the input! (not belong in alpahabet)");
-
-            S[i - 1] = S[i - 1] || [];
-            C[i]     = C[i]     || [];
-
-            for (let stateSymbol of S[i - 1]) {
-                let currentState              = this.getState(stateSymbol);
+                return new AcceptanceResult(string, false, "An invalid symbol was found in the input! (does not belong in alpahabet)");
+            
+            for (let currentStateSymbol of S) {
+                let currentState              = this.getState(currentStateSymbol);
                 let reachableStatesWithSymbol = currentState.transition[inputSymbol];
 
                 if (typeof reachableStatesWithSymbol === "undefined")
@@ -289,11 +277,16 @@ class NFA extends FiniteStateMachine {
 
                 C[i] = [...new Set([...C[i], ...reachableStatesWithSymbol])]; // concatonate two arrays -> make a set -> make array of set
             }
+
+            S = C[i];
+
+            if (S.length <= 0)
+                return new AcceptanceResult(string, false, "NFA has no where to go!");
         }
 
-        console.log(C, S);
+        
 
-        for (let stateSymbol of C[n]) {
+        for (let stateSymbol of C[n-1]) {
             let state = this.getState(stateSymbol);
             if (state.accepting)
                 return new AcceptanceResult(string, true, "NFA has accepted the input! (There exists one possible accepting result)");

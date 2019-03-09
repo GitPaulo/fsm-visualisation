@@ -74,8 +74,8 @@
 /* floating button */
 .label-container {
     position: fixed;
-    top: 48px;
-    right: 105px;
+    top: 5.5%;
+    right: 6.5%;
     display: table;
     visibility: hidden;
 }
@@ -98,8 +98,8 @@
 
 .float {
     position: fixed;
-    width: 60px;
-    height: 60px;
+    width: 3.5%;
+    height: 6.7%;
     top: 40px;
     right: 40px;
     background-color: rgb(108, 25, 141);
