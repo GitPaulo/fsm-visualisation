@@ -30,8 +30,10 @@ let alphabetInput        = document.getElementById("generator-alphabet-input");
 let statesInput          = document.getElementById("generator-states-input");
 let startingStateInput   = document.getElementById("generator-startingstate-input");
 let acceptingStateInput  = document.getElementById("generator-acceptingstate-input");
-let generateFSMButton    = document.getElementById("generator-generate-fsm");
 let transitionElement    = document.getElementById("generator-transition-element");
+let saveButton           = document.getElementById("generator-save");
+let loadButton           = document.getElementById("generator-load");
+let generateFSMButton    = document.getElementById("generator-generate");
 
 // Settings elements
 let settings                    = document.getElementById("settings");
@@ -47,6 +49,13 @@ let transitionTextColorInput    = document.getElementById("settings-transition-t
 let transitionTextSizeInput     = document.getElementById("settings-transition-text-size");
 let transitionThicknessInput    = document.getElementById("settings-transition-thickness");
 let settingsSaveButton          = document.getElementById("settings-save");
+
+// Load elements
+let loadfsm           = document.getElementById('loadfsm');
+let loadfsmContent    = document.getElementById('loadfsm-content');
+let loadfsmClose      = document.getElementById('loadfsm-close');
+let loadfsmSelect     = document.getElementById('loadfsm-select');
+let loadfsmLoadButton = document.getElementById('loadfsm-load');
 
 /******************************
  *      Page Logic
@@ -165,10 +174,14 @@ let updateTransistionTable = function () {
         div.classList.add('transition-table-row');
         let label = document.createElement("h3");
         label.innerHTML = "Transition function for " + state;
-        label.style.textAlign = "center";
+        label.style.textAlign  = "center";
+        label.style.paddingTop = "1.5%";
         div.appendChild(label);
         for (let symbol of alphabet) {
             transition[state][symbol] = createStateTransitionElement(div, state, symbol);
+        }
+        if (fsmSelect.value === "E_NFA") {
+            transition[state][E_NFA.EMPTY_STRING] = createStateTransitionElement(div, state, E_NFA.EMPTY_STRING);
         }
         transitionElement.appendChild(div);
     }
@@ -273,5 +286,116 @@ generateFSMButton.onclick = function () {
     generator.style.display = "none";
 };
 
+fsmSelect.onchange = function () {
+    updateTransistionTable();
+}
+
+const FSM_PREFIX_KEY = "#FSM#";
+
+saveButton.onclick = function () {
+    if (fsm === null )
+        return alert("Generate a FSM object before saving!");
+
+    let saveID = prompt("Enter an ID to save the FSM object as:", "Ozy makes my sweat");
+    if (saveID === null )
+        return;
+    
+    let shallowCloneFSM        = { ...fsm };
+    shallowCloneFSM.GUIElement = null;  
+    shallowCloneFSM.CLASS_NAME = fsm.constructor.name;
+    
+    localStorage[FSM_PREFIX_KEY+saveID] = JSON.stringify(shallowCloneFSM);
+    alert(`Saved FSM object as '${saveID}'. You may now load it via the load function.`);
+}
+
+loadButton.onclick = function () {
+    loadfsm.style.display   = "block";
+    loadfsmSelect.innerHTML = "";
+
+    for (let storedFSMKey in localStorage) {
+        if(!storedFSMKey.startsWith(FSM_PREFIX_KEY))
+            continue;
+
+        let key     = storedFSMKey.substring(FSM_PREFIX_KEY.length);
+        let option  = document.createElement("option");
+        option.text = key;
+        loadfsmSelect.add(option);
+    }
+}
+
+// BLUR EVENTS
 alphabetInput.onblur = updateTransistionTable;
 statesInput.onblur   = updateTransistionTable;
+
+/***************
+ *  Load Frame
+****************/
+
+loadfsmLoadButton.onclick = function () {
+    let key             = loadfsmSelect.value;
+    let storedFSMObject = JSON.parse(localStorage[FSM_PREFIX_KEY+key]);
+
+    if (storedFSMObject === null)
+        return alert("Invalid stored FSM object!");
+    
+    console.log(localStorage[FSM_PREFIX_KEY+key]);
+    console.log("//////////////////////")
+    console.log(storedFSMObject)
+
+    // Selects are great fun yay
+    let className = storedFSMObject.CLASS_NAME;
+    console.log(className, ":b");
+    let selectIndex;
+
+    switch(className) {
+        case "DFA":
+            selectIndex = 0;
+        break;
+        case "NFA":
+            selectIndex = 1;
+        break;
+        case "E_NFA":
+            selectIndex = 2;
+        break
+        default:
+            throw "Problem identifying class of the stored FSM object! (check class names, select order and validity of object)";
+    }
+
+    fsmSelect.selectedIndex  = selectIndex;
+    alphabetInput.value      = Object.keys(storedFSMObject.alphabet) + "";
+    statesInput.value        = Object.keys(storedFSMObject.states) + "";
+    startingStateInput.value = storedFSMObject.starting;
+
+    let acceptinginput = [];
+    for (let key in storedFSMObject.states) {
+        let state = storedFSMObject.states[key];
+        if (state.accepting)
+            acceptinginput.push(state.symbol);
+    }
+    
+    acceptingStateInput.value = acceptinginput + "";
+
+    // We need two updates. One to create the elements from our prev computed input.
+    // The second will update the global transition table with the new transition input.
+    updateTransistionTable();
+
+    for (let stateSymbol in transition) {
+        let inputTransitionElements = transition[stateSymbol];
+        for (let alphabetSymbol in inputTransitionElements) {
+            let state = storedFSMObject.states[stateSymbol];
+
+            if (!state || !state.transition[alphabetSymbol]) // object doesnt have these states/transitions
+                continue;
+
+            let inputElement   = inputTransitionElements[alphabetSymbol];
+            inputElement.value = state.transition[alphabetSymbol] + "";
+            console.log(inputElement, state.transition[alphabetSymbol], "<<<<<<<<<<<<<<")
+        }
+    }
+
+    loadfsm.style.display     = "none";
+}
+
+loadfsmClose.onclick = function () {
+    loadfsm.style.display = "none";
+}

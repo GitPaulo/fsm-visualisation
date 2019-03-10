@@ -15,7 +15,7 @@
         <div class="label-text">Settings</div>
             <i class="fa fa-play label-arrow"></i>
         </div>
-        <!-- Settings Panel -->
+        <!-- Settings Popup Panel -->
         <div id="settings" class="popup">
             <div id="settings-content" class="popup-content popout" >
                 <!-- Header of Popup -->
@@ -76,7 +76,7 @@
                     <select id="generator-fsm-select">
                         <option value="DFA">DFA</option>
                         <option value="NFA">NFA</option>
-                        <option value="E-NFA">E-NFA</option>
+                        <option value="E_NFA">E-NFA</option>
                     </select>
                     <h4>Alphabet</h4>
                     <input id="generator-alphabet-input" type="text" value="1,0">
@@ -92,7 +92,30 @@
                         <div class="fsm-transition-element" id="generator-transition-element" style="width:100%"></div>
                         <hr>
                     </div>
-                    <button id="generator-generate-fsm" class="hvr-underline-from-center pure-button" style="width: 100%;">Generate FSM</button>
+                    <div>
+                        <button id="generator-save" class="hvr-underline-from-center pure-button" style="width: 49.5%;">Save</button>
+                        <button id="generator-load" class="hvr-underline-from-center pure-button" style="width: 49.5%;">Load</button>
+                    </div>
+                    <hr>
+                    <button id="generator-generate" class="hvr-underline-from-center pure-button" style="width: 100%;">Generate</button>
+                </div>
+            </div>
+        </div>
+        <!-- Load Popup Panel -->
+        <div id="loadfsm" class="popup">
+            <div id="loadfsm-content" class="popup-content popout" >
+                <!-- Header of Popup -->
+                <div class="popup-header">
+                    <span class="popup-close-button" id="loadfsm-close">&times;</span>
+                    <h1>Load FSM</h1>
+                    <hr>
+                </div>
+                <!-- Body of Popup (form) -->
+                <div class="popup-form">
+                    <h4>Select Stored Object</h4>
+                    <select id="loadfsm-select"></select>  
+                    <hr>
+                    <button id="loadfsm-load" class="hvr-underline-from-center pure-button" style="width: 100%;">Load To Generator</button>
                 </div>
             </div>
         </div>
@@ -102,9 +125,12 @@
 <!-- Post Initialisation Scripts -->
 <script src="./libraries/p5.js"></script>
 <script src="./js/scripts/extrafunctions.js"></script>
-<script src="./js/classes/AnimationElements.js"></script>
-<script src="./js/classes/FiniteStateMachines.js"></script>
-<script src="./js/classes/MousePressFun.js"></script>
+<script src="./js/classes/anim/AnimationElements.js"></script>
+<script src="./js/classes/anim/MousePressFun.js"></script>
+<script src="./js/classes/fsms/FiniteStateMachine.js"></script>
+<script src="./js/classes/fsms/DFA.js"></script>
+<script src="./js/classes/fsms/NFA.js"></script>
+<script src="./js/classes/fsms/E-NFA.js"></script>
 <script src="./js/scripts/sketch.js"></script>
 <script src="./js/scripts/index.js"></script>
 

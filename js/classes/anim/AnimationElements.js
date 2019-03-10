@@ -209,8 +209,15 @@ class TransistionElementGUI {
         }
 
         // Text
+        let symbol = this.symbol;
+        if (symbol === E_NFA.EMPTY_STRING){
+            env.textFont(env.GREEK_FONT);
+            symbol = "e"; // thanks font! 
+        } else {
+            env.textFont(env.NORMAL_FONT);
+        }
+
         env.fill(...this.textColor);
-        env.textFont(env.NORMAL_FONT);
         env.textSize(SETTINGS.transistion_text_size);
 
         let extra = this.isLoop ? 45 : 10;
@@ -220,7 +227,7 @@ class TransistionElementGUI {
         if(!this.isLoop && this.needsOffset && this.direction === TransistionElementGUI.BACKWARD)
             th *= -.4;
 
-        env.text(this.symbol, midpoint.x - tw / 2, midpoint.y + th);
+        env.text(symbol, midpoint.x - tw / 2, midpoint.y + th);
     }
 
     highlight(color) {

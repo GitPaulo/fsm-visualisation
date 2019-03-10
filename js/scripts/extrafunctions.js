@@ -10,17 +10,17 @@ window.busySleep = function (ms) {
     }
 }
 
-let componentToHex = function (c){
+let componentToHex = function (c) {
     var hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;
 }
 
-window.rgbToHex = function (r, g, b){
+window.rgbToHex = function (r, g, b) {
     return "" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 window.hexToRgb = function (hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec("#"+hex);
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec("#" + hex);
     return result ? [
         parseInt(result[1], 16),
         parseInt(result[2], 16),
@@ -34,18 +34,18 @@ window.d2d3 = function (x1, y1, x2, y2, x3, y3) {
 
 window.drawArrow = function (sx, sy, ang, offset, env) {
     env.push() // start new drawing state
-        env.translate(sx, sy); // translates to the destination vertex
-        env.rotate(ang); // rotates the arrow point
-        env.triangle(-offset * 0.5, offset, offset * 0.5, offset, 0, -offset / 2); // draws the arrow point as a triangle
+    env.translate(sx, sy); // translates to the destination vertex
+    env.rotate(ang); // rotates the arrow point
+    env.triangle(-offset * 0.5, offset, offset * 0.5, offset, 0, -offset / 2); // draws the arrow point as a triangle
     env.pop();
 }
 
 window.curveBetween = function (x1, y1, x2, y2, d, h, flip, env) {
     // find two control points off this line
     var original = p5.Vector.sub(p5.createVector(x2, y2), env.createVector(x1, y1));
-    var inline   = original.copy().normalize().mult(original.mag() * d);
-    var rotated  = inline.copy().rotate(env.radians(90) + flip * env.radians(180)).normalize().mult(original.mag() * h);
-    var p1       = p5.Vector.add(p5.Vector.add(inline, rotated), env.createVector(x1, y1));
+    var inline = original.copy().normalize().mult(original.mag() * d);
+    var rotated = inline.copy().rotate(env.radians(90) + flip * env.radians(180)).normalize().mult(original.mag() * h);
+    var p1 = p5.Vector.add(p5.Vector.add(inline, rotated), env.createVector(x1, y1));
 
     // line(x1, y1, p1.x, p1.y); //show control line
     rotated.mult(-1);
@@ -57,7 +57,7 @@ window.curveBetween = function (x1, y1, x2, y2, d, h, flip, env) {
 
 window.swapSubstrings = function (str, ss1, ss2) {
     let exp = new RegExp(`(${ss1}|${ss2})`, "g");
-    return str.replace(exp, function($1) {
+    return str.replace(exp, function ($1) {
         return $1 === ss1 ? ss2 : ss1;
     });
 }
@@ -69,4 +69,26 @@ window.drawParralelLine = function (x1, y1, x2, y2, n, a, env) {
     let y2b = y2 - n * Math.sin(a);
 
     env.line(x1b, y1b, x2b, y2b);
+}
+
+window.isCyclic = function (obj) {
+    var seenObjects = [];
+
+    function detect(obj) {
+        if (obj && typeof obj === 'object') {
+            if (seenObjects.indexOf(obj) !== -1) {
+                return true;
+            }
+            seenObjects.push(obj);
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key) && detect(obj[key])) {
+                    console.log(obj, 'cycle at ' + key);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    return detect(obj);
 }

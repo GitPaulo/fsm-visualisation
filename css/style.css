@@ -11,6 +11,10 @@
     src: url('../assets/fonts/Montserrat-Light.otf');
 }
 
+h4 {
+    margin-bottom: 1%;
+}
+
 /******************
 * Main Page CSS
 ******************/
