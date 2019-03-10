@@ -1,0 +1,5 @@
+# yolo
+.stackdump
+sh.exe.stackdump
+.exe.stackdump
+bash.exe.stackdump
