@@ -59,7 +59,7 @@ generateButton.onclick = function () {
     acceptButton.className  = "hvr-underline-from-center pure-button button-accept";
     acceptInput.className   = "accept-input";
 
-    updateTransistionTable();
+    updatetransitionTable();
 }
 
 acceptButton.onclick = function () {
@@ -83,7 +83,7 @@ const SETTINGS = {
     state_radius             : 100,
     transition_element_color : [80, 80, 80],
     transition_text_color    : [255, 255, 255],
-    transistion_text_size    : 60,
+    transition_text_size    : 60,
     transition_thickness     : 15,
 }; // before IIFE always semi-colon!
 
@@ -96,7 +96,7 @@ const SETTINGS = {
     stateTextColorInput.value         = rgbToHex(...SETTINGS.state_text_color);
     transitionElementColorInput.value = rgbToHex(...SETTINGS.transition_element_color);
     transitionTextColorInput.value    = rgbToHex(...SETTINGS.transition_text_color);
-    transitionTextSizeInput.value     = SETTINGS.transistion_text_size;
+    transitionTextSizeInput.value     = SETTINGS.transition_text_size;
     transitionThicknessInput.value    = SETTINGS.transition_thickness;
 })();
 
@@ -108,7 +108,7 @@ settingsSaveButton.onclick = function () {
     SETTINGS.state_text_color         = hexToRgb(stateTextColorInput.value);
     SETTINGS.transition_element_color = hexToRgb(transitionElementColorInput.value);
     SETTINGS.transition_text_color    = hexToRgb(transitionTextColorInput.value)
-    SETTINGS.transistion_text_size    = Number(transitionTextSizeInput.value);
+    SETTINGS.transition_text_size    = Number(transitionTextSizeInput.value);
     SETTINGS.transition_thickness     = Number(transitionThicknessInput.value);
 
     settings.style.display = "none";
@@ -126,7 +126,7 @@ closeSettingsButton.onclick = async function () {
 
 // Biggest mess ever created BUT HEY IT WORKS FAM
 let transition = {}; // { '1' = { 'a' : [el1, el2], ... } }
-let updateTransistionTable = function () {
+let updatetransitionTable = function () {
     let alphabet = [];
     let states   = [];
 
@@ -289,8 +289,12 @@ generateFSMButton.onclick = function () {
                 continue;
             
             let transitionArray = inputElement.value.split(',');
+
             if (transitionArray.length > 1 && fsmType === "DFA") 
-                return alert(`Found a non-deterministic transition in a DFA!\n(State Symbol: ${stateSymbol} Transistion Symbol: ${transistionSymbol})`);
+                return alert(`Found a non-deterministic transition in a DFA!\n(State Symbol: ${stateSymbol} transition Symbol: ${transitionSymbol})`);
+
+            if (!transitionArray.every(s => statesArray.includes(s)))
+                return alert("There exists one or more invalid transition function states!");
 
             states[stateSymbol].transition[transitionSymbol] = transitionArray;
         }
@@ -341,10 +345,10 @@ loadButton.onclick = function () {
     }
 }
 
-// Events to trigger transistion table element update
-alphabetInput.onblur = updateTransistionTable;
-statesInput.onblur   = updateTransistionTable;
-fsmSelect.onchange   = updateTransistionTable;
+// Events to trigger transition table element update
+alphabetInput.onblur = updatetransitionTable;
+statesInput.onblur   = updatetransitionTable;
+fsmSelect.onchange   = updatetransitionTable;
 
 /******************************
  *   Load FSM Frame Logic
@@ -399,7 +403,7 @@ loadfsmLoadButton.onclick = function () {
     acceptingStateInput.value = acceptinginput + "";
 
     // update before we add stuff! 
-    updateTransistionTable();
+    updatetransitionTable();
 
     for (let stateSymbol in transition) {
         let inputTransitionElements = transition[stateSymbol];
