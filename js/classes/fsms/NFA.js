@@ -47,7 +47,6 @@ class NFA extends FiniteStateMachine {
     }
 
     convertToDFA() {
-
         return new DFA();
     }
 }

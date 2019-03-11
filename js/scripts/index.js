@@ -2,19 +2,6 @@
 var fsm           = null;
 var acceptPromise = null;
 
-// Default Values - Configurable in settings popup
-const SETTINGS = {
-    sleep_interval           : 700,
-    state_element_color      : [240, 240, 240],
-    state_text_color         : [255, 255, 255],
-    state_text_size          : 80,
-    state_radius             : 100,
-    transition_element_color : [80, 80, 80],
-    transition_text_color    : [255, 255, 255],
-    transistion_text_size    : 60,
-    transition_thickness     : 15,
-}
-
 // Page core elements
 let generateButton = document.getElementById("generate");
 let acceptButton   = document.getElementById("accept");
@@ -51,11 +38,13 @@ let transitionThicknessInput    = document.getElementById("settings-transition-t
 let settingsSaveButton          = document.getElementById("settings-save");
 
 // Load elements
-let loadfsm           = document.getElementById('loadfsm');
-let loadfsmContent    = document.getElementById('loadfsm-content');
-let loadfsmClose      = document.getElementById('loadfsm-close');
-let loadfsmSelect     = document.getElementById('loadfsm-select');
-let loadfsmLoadButton = document.getElementById('loadfsm-load');
+let loadfsm                 = document.getElementById('loadfsm');
+let loadfsmContent          = document.getElementById('loadfsm-content');
+let loadfsmClose            = document.getElementById('loadfsm-close');
+let loadfsmSelect           = document.getElementById('loadfsm-select');
+let loadfsmClearCacheButton = document.getElementById('loadfsm-clearcache');
+let loadfsmRandomFSMButton  = document.getElementById('loadfsm-randomfsm');
+let loadfsmLoadButton       = document.getElementById('loadfsm-load');
 
 /******************************
  *      Page Logic
@@ -63,7 +52,7 @@ let loadfsmLoadButton = document.getElementById('loadfsm-load');
 
 settingsButton.onclick = function () {
     settings.style.display = "block";
-};
+}
 
 generateButton.onclick = function () {
     generator.style.display = "block";
@@ -71,7 +60,7 @@ generateButton.onclick = function () {
     acceptInput.className   = "accept-input";
 
     updateTransistionTable();
-};
+}
 
 acceptButton.onclick = function () {
     if (fsm === null) {
@@ -80,13 +69,25 @@ acceptButton.onclick = function () {
     }
 
     acceptPromise = fsm.accept(acceptInput.value).then((r) => (console.log(r) || true) && alert(`Accepted: ${r.accepted}\nMessage: ${r.message}`));
-};
+}
 
 /******************************
  *      Settings Logic
 ******************************/
-// Load Defaults
+// Default Values - Configurable in settings popup
+const SETTINGS = {
+    sleep_interval           : 700,
+    state_element_color      : [240, 240, 240],
+    state_text_color         : [255, 255, 255],
+    state_text_size          : 80,
+    state_radius             : 100,
+    transition_element_color : [80, 80, 80],
+    transition_text_color    : [255, 255, 255],
+    transistion_text_size    : 60,
+    transition_thickness     : 15,
+}; // before IIFE always semi-colon!
 
+// Load Defaults
 (function (){
     speedInput.value                  = SETTINGS.sleep_interval;
     stateRadiusInput.value            = SETTINGS.state_radius;
@@ -98,12 +99,6 @@ acceptButton.onclick = function () {
     transitionTextSizeInput.value     = SETTINGS.transistion_text_size;
     transitionThicknessInput.value    = SETTINGS.transition_thickness;
 })();
-
-// Event Functions
-closeSettingsButton.onclick = async function () {
-    settingsContent.classList.add("slide-out");
-    await setTimeout(() => { settings.style.display = "none";  settingsContent.classList.remove("slide-out")}, 600);
-};
 
 settingsSaveButton.onclick = function () {
     SETTINGS.sleep_interval           = Number(speedInput.value);
@@ -117,7 +112,13 @@ settingsSaveButton.onclick = function () {
     SETTINGS.transition_thickness     = Number(transitionThicknessInput.value);
 
     settings.style.display = "none";
-};
+}
+
+// Event Functions
+closeSettingsButton.onclick = async function () {
+    settingsContent.classList.add("slide-out");
+    await setTimeout(() => { settings.style.display = "none";  settingsContent.classList.remove("slide-out")}, 600);
+}
 
 /******************************
  *      Generator Logic
@@ -154,35 +155,42 @@ let updateTransistionTable = function () {
         let stateTransitionInputElement = document.createElement("div");
         stateTransitionInputElement.classList.add('transition-table-row-element');
 
-        let label           = document.createElement("p");
-        label.innerHTML     = `Symbol: '${symbol}'`;
-        label.style.margin  = 0;
+        let label              = document.createElement("p");
+        label.innerHTML        = `Symbol: '${symbol}'`;
+        label.style.margin     = 0;
         label.style.marginLeft = "2%";
-        let inputElement    = document.createElement("input");
+       
+        let inputElement = document.createElement("input");
         inputElement.classList.add('transition-table-row-element-input');
 
         stateTransitionInputElement.appendChild(label);
         stateTransitionInputElement.appendChild(inputElement);
-
         div.appendChild(stateTransitionInputElement);
+
         return inputElement;
     }
 
     for (let state of states) {
-        transition[state] = { };
+        transition[state] = {};
+
         let div = document.createElement("div");
         div.classList.add('transition-table-row');
-        let label = document.createElement("h3");
-        label.innerHTML = "Transition function for " + state;
+        
+        let label              = document.createElement("h3");
+        label.innerHTML        = "Transition function for " + state;
         label.style.textAlign  = "center";
         label.style.paddingTop = "1.5%";
+
         div.appendChild(label);
+        
         for (let symbol of alphabet) {
             transition[state][symbol] = createStateTransitionElement(div, state, symbol);
         }
+
         if (fsmSelect.value === "E_NFA") {
             transition[state][E_NFA.EMPTY_STRING] = createStateTransitionElement(div, state, E_NFA.EMPTY_STRING);
         }
+
         transitionElement.appendChild(div);
     }
 
@@ -190,13 +198,17 @@ let updateTransistionTable = function () {
 }
  
 closeGeneratorButton.onclick = async function () {
-    //generator.style.display = "none";
     generatorContent.classList.add("slide-out");
-    await setTimeout(() => { generator.style.display = "none";  generatorContent.classList.remove("slide-out")}, 600);
+    
+    await setTimeout(() => { 
+        generator.style.display = "none";  
+        generatorContent.classList.remove("slide-out")
+    }, 600);
+    
     if (fsm) return; // so that we can continue to test input on current DFA
     acceptButton.className = "hvr-underline-from-center pure-button button-accept pure-button-disabled";
     acceptInput.className  = "accept-input input-disable";
-};
+}
 
 generateFSMButton.onclick = function () {
     let fsmType             = fsmSelect.value;
@@ -245,6 +257,9 @@ generateFSMButton.onclick = function () {
     if (startingStateSymbol === "")
         return alert("There must be one starting state!");
 
+    if (!statesArray.includes(startingStateSymbol))
+        return alert("Starting state is invalid!");
+    
     // accepting states
     let acceptingStateString = acceptingStateInput.value.trim();
 
@@ -255,6 +270,9 @@ generateFSMButton.onclick = function () {
 
     if (acceptingStatesArray[0] === "")
         return alert("The FSM must have at least one accepting state!");
+
+    if (!acceptingStatesArray.every(s => statesArray.includes(s)))
+        return alert("There exists one or more invalid accepting states!");
 
     for (let acceptingStateSymbol of acceptingStatesArray) {
         states[acceptingStateSymbol].accepting = true;
@@ -269,8 +287,12 @@ generateFSMButton.onclick = function () {
             let inputElement = transitionElement[transitionSymbol];
             if (inputElement.value === "")
                 continue;
-            console.log(inputElement.value);
-            states[stateSymbol].transition[transitionSymbol] = inputElement.value.split(',');
+            
+            let transitionArray = inputElement.value.split(',');
+            if (transitionArray.length > 1 && fsmType === "DFA") 
+                return alert(`Found a non-deterministic transition in a DFA!\n(State Symbol: ${stateSymbol} Transistion Symbol: ${transistionSymbol})`);
+
+            states[stateSymbol].transition[transitionSymbol] = transitionArray;
         }
     }
 
@@ -284,10 +306,6 @@ generateFSMButton.onclick = function () {
     );
 
     generator.style.display = "none";
-};
-
-fsmSelect.onchange = function () {
-    updateTransistionTable();
 }
 
 const FSM_PREFIX_KEY = "#FSM#";
@@ -323,16 +341,21 @@ loadButton.onclick = function () {
     }
 }
 
-// BLUR EVENTS
+// Events to trigger transistion table element update
 alphabetInput.onblur = updateTransistionTable;
 statesInput.onblur   = updateTransistionTable;
+fsmSelect.onchange   = updateTransistionTable;
 
-/***************
- *  Load Frame
-****************/
+/******************************
+ *   Load FSM Frame Logic
+******************************/
 
 loadfsmLoadButton.onclick = function () {
-    let key             = loadfsmSelect.value;
+    let key = loadfsmSelect.value;
+
+    if (key === "")
+        return alert("There are no stored FSM objects to load!");
+
     let storedFSMObject = JSON.parse(localStorage[FSM_PREFIX_KEY+key]);
 
     if (storedFSMObject === null)
@@ -375,8 +398,7 @@ loadfsmLoadButton.onclick = function () {
     
     acceptingStateInput.value = acceptinginput + "";
 
-    // We need two updates. One to create the elements from our prev computed input.
-    // The second will update the global transition table with the new transition input.
+    // update before we add stuff! 
     updateTransistionTable();
 
     for (let stateSymbol in transition) {
@@ -393,7 +415,17 @@ loadfsmLoadButton.onclick = function () {
         }
     }
 
-    loadfsm.style.display     = "none";
+    loadfsm.style.display = "none";
+}
+
+loadfsmClearCacheButton.onclick = function () {
+    localStorage.clear();
+    loadButton.onclick();
+    alert("Cleared local cache! (along with all stored FSM objects)");
+}
+
+loadfsmRandomFSMButton.onclick = function () {
+
 }
 
 loadfsmClose.onclick = function () {

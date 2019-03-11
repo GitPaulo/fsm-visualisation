@@ -23,6 +23,7 @@ class E_NFA extends FiniteStateMachine { // extend NFA?
             
             for (let currentStateSymbol of S) {
                 let currentState        = this.getState(currentStateSymbol);
+                // Take current symbol. Then recursively get E reachable states? (below is wrong btw :())
                 let EReachableStates    = currentState.transition[inputSymbol] || [];
                 let NonEReachableStates = currentState.transition[E_NFA.EMPTY_STRING] || [];
                 let reachableStatesWithSymbol = [...new Set([...EReachableStates, ...NonEReachableStates])];
