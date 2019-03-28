@@ -86,7 +86,7 @@ class StateElementGUI {
         env.textSize(SETTINGS.state_text_size);
 
         let tw = env.textWidth(this.symbol);
-        let th = env.textSize(this.symbol);
+        let th = env.textSize();
         env.text(this.symbol, this.pos.x - tw / 2, this.pos.y + th / 2.8);
     }
 
@@ -210,19 +210,20 @@ class TransistionElementGUI {
 
         // Text
         let symbol = this.symbol;
-        if (symbol === E_NFA.EMPTY_STRING){
+        
+        if (symbol.indexOf(E_NFA.EMPTY_STRING) > -1){
             env.textFont(env.GREEK_FONT);
-            symbol = "e"; // thanks font! 
+            symbol = symbol.replace(E_NFA.EMPTY_STRING, "e"); // thanks font! 
         } else {
             env.textFont(env.NORMAL_FONT);
         }
 
         env.fill(...this.textColor);
-        env.textSize(SETTINGS.transistion_text_size);
+        env.textSize(SETTINGS.transition_text_size);
 
         let extra = this.isLoop ? 45 : 10;
         let tw    = env.textWidth(this.symbol);
-        let th    = env.textSize(this.symbol) + extra;
+        let th    = env.textSize() + extra;
 
         if(!this.isLoop && this.needsOffset && this.direction === TransistionElementGUI.BACKWARD)
             th *= -.4;

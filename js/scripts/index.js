@@ -108,7 +108,7 @@ settingsSaveButton.onclick = function () {
     SETTINGS.state_text_color         = hexToRgb(stateTextColorInput.value);
     SETTINGS.transition_element_color = hexToRgb(transitionElementColorInput.value);
     SETTINGS.transition_text_color    = hexToRgb(transitionTextColorInput.value)
-    SETTINGS.transition_text_size    = Number(transitionTextSizeInput.value);
+    SETTINGS.transition_text_size     = Number(transitionTextSizeInput.value);
     SETTINGS.transition_thickness     = Number(transitionThicknessInput.value);
 
     settings.style.display = "none";
@@ -428,8 +428,56 @@ loadfsmClearCacheButton.onclick = function () {
     alert("Cleared local cache! (along with all stored FSM objects)");
 }
 
+let randomInteger = (min, max) => {
+    let int = Math.floor((Math.random() * ((max - min) + 1)) + min);
+    return int;
+}
 loadfsmRandomFSMButton.onclick = function () {
+    fsmSelect.selectedIndex  = randomInteger(0, 2);
 
+    let alphabetSize        = randomInteger(1, 3);
+    let randomAlphabetArray = [];
+
+    const ASCII_LETTER_UPPER = 122;
+    const ASCII_LETTER_LOWER = 97;
+
+    for (let i = 0; i < alphabetSize; i++) {
+        let symbol;
+        do {
+            symbol = String.fromCharCode(randomInteger(ASCII_LETTER_LOWER, ASCII_LETTER_UPPER)).toUpperCase();
+        }while(randomAlphabetArray.includes(symbol));
+        
+        randomAlphabetArray.push(symbol);
+    }
+
+    alphabetInput.value = randomAlphabetArray + ""; 
+
+    let stateSize = Math.floor((Math.random() * ((3 - 1) + 2)) + 2);
+    let randomStateArray = [];
+
+    const ASCII_NUM_UPPER = 57;
+    const ASCII_NUM_LOWER = 49;
+
+    for (let i = 0; i < stateSize; i++) {
+        let symbol;
+        do {
+            symbol = String.fromCharCode(randomInteger(ASCII_NUM_LOWER, ASCII_NUM_UPPER));
+        }while(randomAlphabetArray.includes(symbol));
+
+        randomStateArray.push(symbol);
+    }
+
+    statesInput.value = randomStateArray + "";
+
+    let n = randomStateArray.length-1;
+
+    let randomIndex          = randomInteger(0, n);
+    startingStateInput.value = randomStateArray[randomIndex];
+
+    let randomIndex2          = randomInteger(0, n);
+    acceptingStateInput.value = randomStateArray[randomIndex2];
+    
+    loadfsm.style.display = "none";
 }
 
 loadfsmClose.onclick = function () {
