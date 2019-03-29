@@ -50,5 +50,5 @@ class E_NFA extends FiniteStateMachine { // extend NFA?
     }
 }
 
-E_NFA.EMPTY_STRING = "ε";
+E_NFA.EMPTY_STRING = "\u03B5";
 window.E_NFA       = E_NFA;

@@ -210,10 +210,10 @@ class TransistionElementGUI {
 
         // Text
         let symbol = this.symbol;
-        
-        if (symbol.indexOf(E_NFA.EMPTY_STRING) > -1){
+        let index  = symbol.indexOf(E_NFA.EMPTY_STRING);
+
+        if (index > -1){
             env.textFont(env.GREEK_FONT);
-            symbol = symbol.replace(E_NFA.EMPTY_STRING, "e"); // thanks font! 
         } else {
             env.textFont(env.NORMAL_FONT);
         }

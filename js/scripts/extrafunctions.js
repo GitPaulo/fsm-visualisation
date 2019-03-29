@@ -92,3 +92,8 @@ window.isCyclic = function (obj) {
 
     return detect(obj);
 }
+
+// Changes string prototype so that we can add "abc".replaceAt(1, "X") to become "aXc"
+String.prototype.replaceAt = function (index, replacement) {   
+    return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
+}

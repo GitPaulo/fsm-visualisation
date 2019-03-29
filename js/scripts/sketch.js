@@ -23,7 +23,7 @@ var environment = function (env) {
         // is loaded before setup() and draw() are called
         env.CAPS_FONT   = env.loadFont('./assets/fonts/BebasNeue-Bold.otf');
         env.NORMAL_FONT = env.loadFont('./assets/fonts/Montserrat-Light.otf');
-        env.GREEK_FONT  = env.loadFont('./assets/fonts/Ach4.ttf');
+        env.GREEK_FONT  = env.loadFont('./assets/fonts/Greek Futura LDR.ttf');
     }
 
     env.setup = function (w = canvasElement.offsetWidth, h = canvasElement.offsetHeight) {
