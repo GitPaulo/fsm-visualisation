@@ -322,9 +322,15 @@ saveButton.onclick = function () {
     if (saveID === null )
         return;
     
-    let shallowCloneFSM        = { ...fsm };
+    let shallowCloneFSM        = { };
     shallowCloneFSM.GUIElement = null;  
     shallowCloneFSM.CLASS_NAME = fsm.constructor.name;
+    
+    for (var i in fsm) {
+        if(shallowCloneFSM.hasOwnProperty(i)) {
+            shallowCloneFSM[i] = fsm[i];
+        }
+    }
     
     localStorage[FSM_PREFIX_KEY+saveID] = JSON.stringify(shallowCloneFSM);
     alert(`Saved FSM object as '${saveID}'. You may now load it via the load function.`);
