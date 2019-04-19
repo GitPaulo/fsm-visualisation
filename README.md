@@ -1,4 +1,4 @@
-# Finite State Machine - Generator & Animator
+# Finite State Machines - Generator & Interactive Visualiser
 A front-end application that generates, displays and animates theoretical Finite State Machines.
 
 **Features**:
