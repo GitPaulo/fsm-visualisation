@@ -432,38 +432,67 @@ let randomInteger = (min, max) => {
     let int = Math.floor((Math.random() * ((max - min) + 1)) + min);
     return int;
 }
+
+let LetterGenerator = function () {
+    return {
+        letters  : [],
+        generate : function () {
+            const ASCII_LETTER_LOWER = 97;
+            const ASCII_LETTER_UPPER = 123;
+
+            let n = this.letters.length;
+            let difference = ASCII_LETTER_UPPER - ASCII_LETTER_LOWER;
+            let offset = n % difference;
+
+            let letter = String.fromCharCode(ASCII_LETTER_LOWER + offset);
+            
+            // suffix
+            if (n >= difference)
+                letter = letter + (n - difference); 
+
+            this.letters.push(letter);
+            return letter;
+        }
+    }
+}
+
+let NumberGenerator = function () {
+    return {
+        counter : 0,
+        generate : function () {
+            return this.counter++ + "";
+        }
+    }
+}
+
 loadfsmRandomFSMButton.onclick = function () {
     fsmSelect.selectedIndex  = randomInteger(0, 2);
 
-    let alphabetSize        = randomInteger(1, 3);
+    let aaUpperBound = prompt("Enter upper bound for random alphabet array generator:");
+    if (isNaN(aaUpperBound))
+        return alert("Input was not a number! Aborting...");
+
+    let alphabetSize = randomInteger(1, aaUpperBound);
+    let letterGen    = LetterGenerator();
     let randomAlphabetArray = [];
-
-    const ASCII_LETTER_UPPER = 122;
-    const ASCII_LETTER_LOWER = 97;
-
+    
     for (let i = 0; i < alphabetSize; i++) {
-        let symbol;
-        do {
-            symbol = String.fromCharCode(randomInteger(ASCII_LETTER_LOWER, ASCII_LETTER_UPPER)).toUpperCase();
-        }while(randomAlphabetArray.includes(symbol));
-        
+        let symbol = letterGen.generate();
         randomAlphabetArray.push(symbol);
     }
 
     alphabetInput.value = randomAlphabetArray + ""; 
 
-    let stateSize = Math.floor((Math.random() * ((3 - 1) + 2)) + 2);
+    let saUpperBound = prompt("Enter upper bound for random state array generator:");
+    if (isNaN(saUpperBound))
+        return alert("Input was not a number! Aborting...");
+
+    let stateSize = randomInteger(1, saUpperBound);
+    let numberGen = NumberGenerator();
     let randomStateArray = [];
 
-    const ASCII_NUM_UPPER = 57;
-    const ASCII_NUM_LOWER = 49;
-
     for (let i = 0; i < stateSize; i++) {
-        let symbol;
-        do {
-            symbol = String.fromCharCode(randomInteger(ASCII_NUM_LOWER, ASCII_NUM_UPPER));
-        }while(randomAlphabetArray.includes(symbol));
-
+        let symbol = numberGen.generate();
         randomStateArray.push(symbol);
     }
 
