@@ -78,7 +78,7 @@ acceptButton.onclick = function () {
 const SETTINGS = {
     sleep_interval           : 700,
     state_element_color      : [240, 240, 240],
-    state_text_color         : [255, 255, 255],
+    state_text_color         : [40, 40, 40],
     state_text_size          : 80,
     state_radius             : 100,
     transition_element_color : [80, 80, 80],
@@ -147,6 +147,7 @@ let updatetransitionTable = function () {
     states = statesString.split(',');
 
     // Delete current child elements
+    transition = { };
     while (transitionElement.firstChild) {
         transitionElement.removeChild(transitionElement.firstChild);
     }

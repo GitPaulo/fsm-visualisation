@@ -82,7 +82,7 @@ class StateElementGUI {
         env.ellipse(this.pos.x, this.pos.y, this.radius, this.radius);
 
         env.textFont(env.CAPS_FONT);
-        env.fill(24, 24, 24);
+        env.fill(SETTINGS.state_text_color);
         env.textSize(SETTINGS.state_text_size);
 
         let tw = env.textWidth(this.symbol);
